@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { adminDb } from '@/lib/firebaseAdmin'
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,39 +8,29 @@ export async function GET(request: NextRequest) {
     const level = searchParams.get('level')
     const language = searchParams.get('language')
 
-    const where: any = {
-      isActive: true,
-    }
+    // Query Firestore tutors collection
+    let query = adminDb.collection('tutors').where('isActive', '==', true)
 
+    // Optional filters
     if (subject) {
-      where.subjects = {
-        some: {
-          subject: subject,
-        },
-      }
+      query = query.where('subjects', 'array-contains', subject)
+    }
+    if (level) {
+      query = query.where('levels', 'array-contains', level)
+    }
+    if (language) {
+      query = query.where('languages', 'array-contains', language)
     }
 
-    const tutors = await prisma.tutor.findMany({
-      where,
-      include: {
-        user: {
-          select: {
-            firstName: true,
-            lastName: true,
-            email: true,
-            language: true,
-          },
-        },
-        subjects: true,
-        achievements: true,
-        earlyStudy: true,
-        availability: true,
-      },
-      orderBy: {
-        rating: 'desc',
-      },
-      take: 10,
+    const snapshot = await query.get()
+
+    let tutors = snapshot.docs.map(doc => {
+      const data = doc.data() as { rating?: number }
+      return { id: doc.id, ...data }
     })
+
+    // Sort by rating desc, take top 10
+    tutors = tutors.sort((a, b) => ((b.rating ?? 0) - (a.rating ?? 0))).slice(0, 10)
 
     return NextResponse.json(tutors)
   } catch (error) {
