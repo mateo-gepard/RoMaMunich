@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Menu, X, Globe } from 'lucide-react'
 
 export default function Navbar() {
+  const { data: session } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [language, setLanguage] = useState<'de' | 'en'>('de')
@@ -108,12 +110,12 @@ export default function Navbar() {
             </button>
 
             <Link
-              href="/login"
+              href={session ? "/dashboard" : "/login"}
               className={`font-medium transition-colors ${
                 isScrolled ? 'text-navy-700 hover:text-navy-900' : 'text-white hover:text-gray-200'
               }`}
             >
-              {t.login}
+              {session ? 'Dashboard' : t.login}
             </Link>
 
             <Link href="/matching" className="btn-primary">
@@ -173,11 +175,11 @@ export default function Navbar() {
                   </span>
                 </button>
                 <Link
-                  href="/login"
+                  href={session ? "/dashboard" : "/login"}
                   className="block text-navy-700 font-medium"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {t.login}
+                  {session ? 'Dashboard' : t.login}
                 </Link>
                 <Link
                   href="/matching"

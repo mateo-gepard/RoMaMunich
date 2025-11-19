@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { adminDb } from '@/lib/firebaseAdmin'
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
     const body = await request.json()
     const {
       tutorId,
@@ -17,9 +21,26 @@ export async function POST(request: NextRequest) {
       contactInfo,
     } = body
 
+    // Save booking to Firestore
+    const bookingData = {
+      userId: session?.user?.id || null,
+      tutorId,
+      tutorName,
+      date,
+      time,
+      location,
+      package: packageType,
+      packageDetails,
+      contactInfo,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+    }
+
+    const bookingRef = await adminDb.collection('bookings').add(bookingData)
+
     // Send confirmation email to customer
     const customerEmail = await resend.emails.send({
-      from: 'RoMa Munich <bookings@roma-munich.de>',
+      from: 'RoMa Munich <onboarding@resend.dev>',  // Use Resend's default until domain is verified
       to: contactInfo.email,
       subject: 'Buchungsbestätigung - RoMa Munich',
       html: `
@@ -92,7 +113,7 @@ export async function POST(request: NextRequest) {
 
     // Send notification email to admin/tutor
     const adminEmail = await resend.emails.send({
-      from: 'RoMa Munich <bookings@roma-munich.de>',
+      from: 'RoMa Munich <onboarding@resend.dev>',  // Use Resend's default until domain is verified
       to: process.env.ADMIN_EMAIL || 'info@roma-munich.de',
       subject: `Neue Buchung: ${tutorName} - ${contactInfo.name}`,
       html: `
@@ -152,9 +173,10 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(
-      { 
+      {
         success: true,
         message: 'Buchung erfolgreich erstellt',
+        bookingId: bookingRef.id,
         customerEmailId: customerEmail.data?.id,
         adminEmailId: adminEmail.data?.id,
       },

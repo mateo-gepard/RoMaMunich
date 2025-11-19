@@ -2,6 +2,7 @@ import '../styles/globals.css'
 import type { Metadata } from 'next'
 import { Inter, Merriweather } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
+import SessionProvider from '@/components/providers/SessionProvider'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -39,8 +40,10 @@ export default function RootLayout({
   return (
     <html lang="de" className={`${inter.variable} ${merriweather.variable}`}>
       <body className="font-sans">
-        {children}
-        <Toaster 
+        <SessionProvider>
+          {children}
+        </SessionProvider>
+        <Toaster
           position="top-right"
           toastOptions={{
             duration: 4000,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { adminAuth, adminDb } from '@/lib/firebaseAdmin'
 import bcrypt from 'bcrypt'
 
 export async function POST(request: NextRequest) {
@@ -22,49 +22,58 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if user exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    })
-
-    if (existingUser) {
+    // Check if user exists in Firebase Auth
+    try {
+      await adminAuth.getUserByEmail(email)
       return NextResponse.json(
         { error: 'Ein Benutzer mit dieser E-Mail existiert bereits' },
         { status: 409 }
       )
+    } catch (error: any) {
+      // User doesn't exist, continue with registration
+      if (error.code !== 'auth/user-not-found') {
+        throw error
+      }
     }
 
-    // Hash password
+    // Create user in Firebase Auth
+    const userRecord = await adminAuth.createUser({
+      email,
+      password,
+      displayName: name,
+      emailVerified: false,
+    })
+
+    // Hash password for Firestore backup
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        phone: phone || null,
-        password: hashedPassword,
-        role: role === 'PARENT' ? 'PARENT' : 'STUDENT',
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-      },
+    // Store additional user data in Firestore
+    await adminDb.collection('users').doc(userRecord.uid).set({
+      name,
+      email,
+      phone: phone || null,
+      password: hashedPassword,
+      role: role === 'PARENT' ? 'PARENT' : 'STUDENT',
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })
 
     return NextResponse.json(
-      { 
+      {
         message: 'Registrierung erfolgreich',
-        user 
+        user: {
+          id: userRecord.uid,
+          name,
+          email,
+          role: role === 'PARENT' ? 'PARENT' : 'STUDENT',
+        }
       },
       { status: 201 }
     )
-  } catch (error) {
+  } catch (error: any) {
     console.error('Registration error:', error)
     return NextResponse.json(
-      { error: 'Interner Serverfehler' },
+      { error: error.message || 'Interner Serverfehler' },
       { status: 500 }
     )
   }
