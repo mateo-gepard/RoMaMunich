@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-navy-900: #081525;
+    --color-navy-800: #0c1e30;
+    --color-navy-700: #102840;
+    --color-navy-600: #153254;
+    --color-navy-500: #1a365d;
+    --color-teal-500: #14b8a6;
+  }
+
+  * {
+    @apply border-gray-200;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-bold text-navy-900;
+  }
+
+  h1 {
+    @apply text-5xl md:text-6xl lg:text-display-2;
+  }
+
+  h2 {
+    @apply text-4xl md:text-5xl;
+  }
+
+  h3 {
+    @apply text-3xl md:text-4xl;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-navy-600 text-white font-semibold rounded-lg 
+           hover:bg-navy-700 transition-all duration-200 
+           shadow-md hover:shadow-lg active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-white text-navy-600 font-semibold rounded-lg 
+           border-2 border-navy-600 hover:bg-navy-50 
+           transition-all duration-200 active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply px-6 py-3 text-navy-600 font-semibold 
+           hover:bg-navy-50 rounded-lg transition-all duration-200;
+  }
+
+  .card-premium {
+    @apply bg-white rounded-2xl shadow-premium p-8 
+           border border-gray-100 hover:shadow-xl 
+           transition-all duration-300;
+  }
+
+  .input-standard {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg 
+           focus:ring-2 focus:ring-navy-500 focus:border-transparent 
+           transition-all duration-200 outline-none;
+  }
+
+  .container-premium {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-padding {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer utilities {
+  .text-gradient-teal {
+    @apply bg-gradient-to-r from-teal-500 to-teal-600 
+           bg-clip-text text-transparent;
+  }
+
+  .backdrop-blur-premium {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-navy-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-navy-500;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+  /* Selection color */
+  ::selection {
+    @apply bg-teal-200 text-navy-900;
+  }
