@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/authOptions'
-import { PrismaClient } from '@prisma/client'
+import { adminDb } from '@/lib/firebaseAdmin'
 import Stripe from 'stripe'
 
-const prisma = new PrismaClient()
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
 })
@@ -19,31 +18,27 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { tutorId, subject, date, startTime, endTime, durationHours } = body
 
-    // Get tutor info
-    const tutor = await prisma.tutor.findUnique({
-      where: { id: tutorId },
-    })
-
-    if (!tutor) {
+    // Get tutor info from Firestore
+    const tutorDoc = await adminDb.collection('tutors').doc(tutorId).get()
+    if (!tutorDoc.exists) {
       return NextResponse.json({ error: 'Tutor not found' }, { status: 404 })
     }
+    const tutor = tutorDoc.data()
+    const price = (tutor?.hourlyRate || 0) * durationHours
 
-    const price = tutor.hourlyRate * durationHours
-
-    // Create booking
-    const booking = await prisma.booking.create({
-      data: {
-        userId: session.user.id,
-        tutorId,
-        subject,
-        date: new Date(date),
-        startTime,
-        endTime,
-        durationHours,
-        price,
-        status: 'PENDING',
-        paymentStatus: 'PENDING',
-      },
+    // Create booking in Firestore
+    const bookingRef = await adminDb.collection('bookings').add({
+      userId: session.user.id,
+      tutorId,
+      subject,
+      date: new Date(date).toISOString(),
+      startTime,
+      endTime,
+      durationHours,
+      price,
+      status: 'PENDING',
+      paymentStatus: 'PENDING',
+      createdAt: new Date().toISOString(),
     })
 
     // Create Stripe checkout session
@@ -55,7 +50,7 @@ export async function POST(request: NextRequest) {
             currency: 'eur',
             product_data: {
               name: `Mentoring Session: ${subject}`,
-              description: `${durationHours}h with ${tutor.id}`,
+              description: `${durationHours}h with ${tutorId}`,
             },
             unit_amount: Math.round(price * 100), // Convert to cents
           },
@@ -66,18 +61,15 @@ export async function POST(request: NextRequest) {
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking/cancel`,
       metadata: {
-        bookingId: booking.id,
+        bookingId: bookingRef.id,
       },
     })
 
     // Update booking with Stripe session ID
-    await prisma.booking.update({
-      where: { id: booking.id },
-      data: { stripeSessionId: checkoutSession.id },
-    })
+    await bookingRef.update({ stripeSessionId: checkoutSession.id })
 
     return NextResponse.json({
-      bookingId: booking.id,
+      bookingId: bookingRef.id,
       checkoutUrl: checkoutSession.url,
     })
   } catch (error) {
