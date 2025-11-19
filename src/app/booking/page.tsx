@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, Clock, Video, MapPin, Package, Check, ArrowLeft, User, Mail, Phone } from 'lucide-react'
@@ -17,7 +17,7 @@ interface TimeSlot {
   available: boolean
 }
 
-export default function BookingPage() {
+function BookingContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const tutorId = searchParams.get('tutor')
@@ -524,5 +524,13 @@ export default function BookingPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function BookingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <BookingContent />
+    </Suspense>
   )
 }
