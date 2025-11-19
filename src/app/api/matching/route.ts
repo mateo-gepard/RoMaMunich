@@ -1,70 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { adminDb } from '@/lib/firebaseAdmin'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { subject, level, goal, learningStyle, urgency, language, email } = body
 
-    // Save matching quiz data
-    const matchingQuiz = await prisma.matchingQuiz.create({
-      data: {
-        email,
-        subject,
-        level,
-        goal,
-        learningStyle,
-        urgency,
-        language,
-      },
+    // Save matching quiz data in Firestore
+    const matchingQuizRef = await adminDb.collection('matchingQuizzes').add({
+      email,
+      subject,
+      level,
+      goal,
+      learningStyle,
+      urgency,
+      language,
+      createdAt: new Date().toISOString(),
     })
 
-    // Find matching tutors based on criteria
-    const matchingTutors = await prisma.tutor.findMany({
-      where: {
-        isActive: true,
-        subjects: {
-          some: {
-            subject: subject,
-            level: {
-              has: level,
-            },
-          },
-        },
-      },
-      include: {
-        user: {
-          select: {
-            firstName: true,
-            lastName: true,
-            email: true,
-            language: true,
-          },
-        },
-        subjects: true,
-        achievements: true,
-        earlyStudy: true,
-        availability: true,
-      },
-      orderBy: {
-        rating: 'desc',
-      },
-      take: 3,
+    // Find matching tutors from Firestore
+    let query = adminDb.collection('tutors').where('isActive', '==', true)
+    
+    // Filter by subject if provided
+    if (subject) {
+      query = query.where('subjects', 'array-contains', subject)
+    }
+
+    const snapshot = await query.get()
+    let matchingTutors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+
+    // Filter by level and language in-memory (Firestore has limited query capabilities)
+    matchingTutors = matchingTutors.filter((tutor: any) => {
+      if (level && tutor.levels && !tutor.levels.includes(level)) return false
+      return true
     })
+
+    // Sort by rating and take top 3
+    matchingTutors = matchingTutors.sort((a: any, b: any) => (b.rating || 0) - (a.rating || 0)).slice(0, 3)
 
     // Calculate match scores (simplified algorithm)
-    const tutorsWithScores = matchingTutors.map((tutor) => {
+    const tutorsWithScores = matchingTutors.map((tutor: any) => {
       let score = 85 // Base score
 
       // Language match
-      if (tutor.user.language === language) {
+      if (tutor.language === language || (tutor.languages && tutor.languages.includes(language))) {
         score += 10
       }
 
       // High rating bonus
-      if (tutor.rating >= 4.8) {
+      if ((tutor.rating || 0) >= 4.8) {
         score += 5
       }
 
@@ -75,7 +59,7 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json({
-      quizId: matchingQuiz.id,
+      quizId: matchingQuizRef.id,
       matches: tutorsWithScores,
     })
   } catch (error) {
