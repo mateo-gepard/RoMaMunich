@@ -91,14 +91,11 @@ export default function HeroSection() {
               {/* Placeholder for mentor portrait */}
               <div className="absolute inset-0 bg-gradient-to-br from-navy-700 to-navy-600 flex items-center justify-center">
                 <div className="text-center text-white space-y-4">
-                  <div className="w-32 h-32 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-4">
-                    <Award size={64} className="text-gold-500" />
-                  </div>
-                  <p className="text-lg font-medium px-8">
-                    Professional mentor portrait
-                    <br />
-                    (Replace with actual image)
-                  </p>
+                  <img
+                    src="/images/mentor.jpg"
+                    alt="Professional mentor portrait"
+                    className="w-[520px] h-[670px] mx-auto rounded-2xl object-cover mb-4"
+                  />
                 </div>
               </div>
             </div>
