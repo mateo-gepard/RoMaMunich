@@ -1,45 +1,17 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Award, Users, TrendingUp } from 'lucide-react'
-import Image from 'next/image'
+import { useTranslations } from '@/hooks/useTranslations'
 
 export default function HeroSection() {
-  const [language] = useState<'de' | 'en'>('de')
+  const { t } = useTranslations()
 
-  const content = {
-    de: {
-      badge: 'Limitierte Plätze verfügbar',
-      headline: 'Premium 1:1 Mentoring',
-      subheadline: 'von Münchens besten Schülern',
-      description:
-        'Wettbewerbssieger • Frühstudierende • High-Achievers',
-      cta: 'Erstgespräch buchen',
-      learnMore: 'Mehr erfahren',
-      stats: [
-        { icon: Award, label: 'Qualifizierte Mentoren', value: '10+' },
-        { icon: Users, label: 'Zufriedene Schüler', value: '50+' },
-        { icon: TrendingUp, label: 'Individueller Fortschritt', value: '100%' },
-      ],
-    },
-    en: {
-      badge: 'Limited spots available',
-      headline: 'Premium 1:1 Mentoring',
-      subheadline: "by Munich's Best Students",
-      description:
-        'Competition Winners • Early University Students • High-Achievers',
-      cta: 'Book Consultation',
-      learnMore: 'Learn More',
-      stats: [
-        { icon: Award, label: 'Qualified Mentors', value: '10+' },
-        { icon: Users, label: 'Happy Students', value: '50+' },
-        { icon: TrendingUp, label: 'Individual Progress', value: '100%' },
-      ],
-    },
-  }
-
-  const t = content[language]
+  const stats = [
+    { icon: Award, label: t.hero.stats.mentors, value: '10+' },
+    { icon: Users, label: t.hero.stats.students, value: '50+' },
+    { icon: TrendingUp, label: t.hero.stats.progress, value: '100%' },
+  ]
 
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 overflow-hidden">
@@ -58,27 +30,25 @@ export default function HeroSection() {
             <div className="inline-flex items-center space-x-2 bg-teal-500/20 border border-teal-500/30 rounded-full px-4 py-2">
               <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
               <span className="text-teal-300 text-sm font-medium">
-                {t.badge}
+                {t.hero.badge}
               </span>
             </div>
 
             {/* Headline */}
             <div>
               <h1 className="font-serif font-bold text-white mb-4">
-                {t.headline}
+                {t.hero.headline}
                 <br />
-                <span className="text-gradient-teal">{t.subheadline}</span>
+                <span className="text-gradient-teal">{t.hero.subheadline}</span>
               </h1>
               <p className="text-xl text-gray-300 font-medium">
-                {t.description}
+                {t.hero.description}
               </p>
             </div>
 
             {/* Description */}
             <p className="text-lg text-gray-300 leading-relaxed max-w-xl">
-              Exzellenz trifft Nähe. Unsere Mentoren sind nicht nur fachlich
-              herausragend – sie verstehen modernes Lernen, teilen ähnliche
-              Erfahrungen und inspirieren als akademische Vorbilder.
+              {t.hero.bodyText}
             </p>
 
             {/* CTAs */}
@@ -87,20 +57,20 @@ export default function HeroSection() {
                 href="/matching"
                 className="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-teal-500 text-white font-bold rounded-lg hover:bg-teal-400 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
               >
-                <span>{t.cta}</span>
+                <span>{t.hero.cta}</span>
                 <ArrowRight size={20} />
               </Link>
               <Link
                 href="/mentors"
                 className="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/30 hover:bg-white/20 transition-all duration-200"
               >
-                <span>{t.learnMore}</span>
+                <span>{t.hero.learnMore}</span>
               </Link>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/20">
-              {t.stats.map((stat, index) => {
+              {stats.map((stat, index) => {
                 const Icon = stat.icon
                 return (
                   <div key={index} className="space-y-2">

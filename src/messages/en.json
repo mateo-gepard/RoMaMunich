@@ -1,0 +1,124 @@
+{
+  "metadata": {
+    "title": "RoMa Munich – Premium 1:1 Mentoring by Munich's Best Students",
+    "description": "Exclusive tutoring by competition winners, early university students, and high-achievers. Mathematics, Physics, Computer Science, and more – personalized, limited, premium.",
+    "keywords": "Munich tutoring, Elite mentoring, Math Olympiad, Physics Olympiad, Early university, Premium mentoring"
+  },
+  "navbar": {
+    "home": "Home",
+    "mentors": "Mentors",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing",
+    "about": "About",
+    "login": "Sign In",
+    "dashboard": "Dashboard",
+    "bookSession": "Book Consultation"
+  },
+  "hero": {
+    "badge": "Limited spots available",
+    "headline": "Premium 1:1 Mentoring",
+    "subheadline": "by Munich's Best Students",
+    "description": "Competition Winners • Early University Students • High-Achievers",
+    "bodyText": "Excellence meets proximity. Our mentors are not only academically outstanding – they understand modern learning, share similar experiences, and inspire as academic role models.",
+    "cta": "Book Consultation",
+    "learnMore": "Learn More",
+    "stats": {
+      "mentors": "Qualified Mentors",
+      "students": "Happy Students",
+      "progress": "Individual Progress"
+    }
+  },
+  "valueProposition": {
+    "title": "Why RoMa Munich",
+    "subtitle": "Our mentors are Olympiad winners, early university students at LMU/TUM, and multiple competition champions.",
+    "features": {
+      "excellence": {
+        "title": "Academic Excellence",
+        "description": "Competition winners and Olympiad participants"
+      },
+      "proximity": {
+        "title": "Proximity & Understanding",
+        "description": "Mentors who were recently students themselves"
+      },
+      "structure": {
+        "title": "Clear Structure",
+        "description": "Proven methods and personalized learning plans"
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "steps": {
+      "consultation": {
+        "title": "Book Consultation",
+        "description": "Schedule a free introductory meeting"
+      },
+      "matching": {
+        "title": "Mentor Matching",
+        "description": "We find the perfect mentor for your goals"
+      },
+      "learning": {
+        "title": "Individual Learning",
+        "description": "1:1 mentoring on your schedule"
+      }
+    }
+  },
+  "pricing": {
+    "title": "Pricing & Packages",
+    "subtitle": "Choose the right package for your goals",
+    "single": {
+      "name": "Single Session",
+      "price": "€80",
+      "cta": "Book Now"
+    },
+    "package": {
+      "name": "Package",
+      "cta": "Book Package"
+    },
+    "sprint": {
+      "name": "Intensive Sprint",
+      "cta": "Book Sprint"
+    }
+  },
+  "cta": {
+    "title": "Ready for excellent mentoring?",
+    "subtitle": "Schedule your free consultation now",
+    "button": "Book Consultation"
+  },
+  "footer": {
+    "company": "Company",
+    "legal": "Legal",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "imprint": "Imprint",
+    "login": "Sign In",
+    "rights": "All rights reserved"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "register": "Register"
+    },
+    "register": {
+      "title": "Register",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Register",
+      "hasAccount": "Already have an account?",
+      "login": "Sign In"
+    }
+  },
+  "booking": {
+    "title": "Booking",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "selectPackage": "Select Package",
+    "confirm": "Confirm Booking"
+  }
+}

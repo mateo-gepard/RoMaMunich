@@ -1,0 +1,124 @@
+{
+  "metadata": {
+    "title": "RoMa Munich – Premium 1:1 Mentoring von Münchens besten Schülern",
+    "description": "Exklusive Nachhilfe durch Wettbewerbssieger, Frühstudierende und High-Achievers. Mathematik, Physik, Informatik und mehr – personalisiert, limitiert, hochwertig.",
+    "keywords": "Nachhilfe München, Elite Tutoring, Mathematik-Olympiade, Physik-Olympiade, Frühstudium, Premium Mentoring"
+  },
+  "navbar": {
+    "home": "Home",
+    "mentors": "Mentoren",
+    "howItWorks": "So funktioniert's",
+    "pricing": "Preise",
+    "about": "Über uns",
+    "login": "Anmelden",
+    "dashboard": "Dashboard",
+    "bookSession": "Erstgespräch buchen"
+  },
+  "hero": {
+    "badge": "Limitierte Plätze verfügbar",
+    "headline": "Premium 1:1 Mentoring",
+    "subheadline": "von Münchens besten Schülern",
+    "description": "Wettbewerbssieger • Frühstudierende • High-Achievers",
+    "bodyText": "Exzellenz trifft Nähe. Unsere Mentoren sind nicht nur fachlich herausragend – sie verstehen modernes Lernen, teilen ähnliche Erfahrungen und inspirieren als akademische Vorbilder.",
+    "cta": "Erstgespräch buchen",
+    "learnMore": "Mehr erfahren",
+    "stats": {
+      "mentors": "Qualifizierte Mentoren",
+      "students": "Zufriedene Schüler",
+      "progress": "Individueller Fortschritt"
+    }
+  },
+  "valueProposition": {
+    "title": "Warum RoMa Munich",
+    "subtitle": "Unsere Mentoren sind Olympiade-Sieger, Frühstudierende an LMU/TUM und mehrfache Wettbewerbsgewinner.",
+    "features": {
+      "excellence": {
+        "title": "Fachliche Exzellenz",
+        "description": "Wettbewerbssieger und Olympiade-Teilnehmer"
+      },
+      "proximity": {
+        "title": "Nähe & Verständnis",
+        "description": "Mentoren, die kürzlich selbst Schüler waren"
+      },
+      "structure": {
+        "title": "Klare Struktur",
+        "description": "Bewährte Methoden und personalisierte Lernpläne"
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "So funktioniert's",
+    "steps": {
+      "consultation": {
+        "title": "Erstgespräch buchen",
+        "description": "Kostenloses Kennenlerngespräch vereinbaren"
+      },
+      "matching": {
+        "title": "Mentor-Matching",
+        "description": "Wir finden den perfekten Mentor für deine Ziele"
+      },
+      "learning": {
+        "title": "Individuelles Lernen",
+        "description": "1:1 Mentoring nach deinem Zeitplan"
+      }
+    }
+  },
+  "pricing": {
+    "title": "Preise & Pakete",
+    "subtitle": "Wähle das passende Paket für deine Ziele",
+    "single": {
+      "name": "Einzelstunde",
+      "price": "€80",
+      "cta": "Jetzt buchen"
+    },
+    "package": {
+      "name": "Paket",
+      "cta": "Paket buchen"
+    },
+    "sprint": {
+      "name": "Intensiv-Sprint",
+      "cta": "Sprint buchen"
+    }
+  },
+  "cta": {
+    "title": "Bereit für exzellentes Mentoring?",
+    "subtitle": "Vereinbare jetzt dein kostenloses Erstgespräch",
+    "button": "Erstgespräch buchen"
+  },
+  "footer": {
+    "company": "Unternehmen",
+    "legal": "Rechtliches",
+    "contact": "Kontakt",
+    "privacy": "Datenschutz",
+    "terms": "AGB",
+    "imprint": "Impressum",
+    "login": "Anmelden",
+    "rights": "Alle Rechte vorbehalten"
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "noAccount": "Noch kein Konto?",
+      "register": "Registrieren"
+    },
+    "register": {
+      "title": "Registrieren",
+      "name": "Name",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Registrieren",
+      "hasAccount": "Bereits ein Konto?",
+      "login": "Anmelden"
+    }
+  },
+  "booking": {
+    "title": "Buchung",
+    "selectDate": "Datum wählen",
+    "selectTime": "Zeit wählen",
+    "selectPackage": "Paket wählen",
+    "confirm": "Buchung bestätigen"
+  }
+}

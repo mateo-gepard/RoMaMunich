@@ -3,13 +3,16 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { Menu, X, Globe } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
+import { useTranslations } from '@/hooks/useTranslations'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Navbar() {
   const { data: session } = useSession()
+  const { t, locale } = useTranslations()
+  const { setLocale } = useLanguage()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [language, setLanguage] = useState<'de' | 'en'>('de')
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,27 +21,6 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const content = {
-    de: {
-      mentors: 'Mentoren',
-      howItWorks: 'Ablauf',
-      pricing: 'Preise',
-      about: 'Über uns',
-      login: 'Anmelden',
-      bookSession: 'Erstgespräch buchen',
-    },
-    en: {
-      mentors: 'Mentors',
-      howItWorks: 'How it Works',
-      pricing: 'Pricing',
-      about: 'About',
-      login: 'Sign In',
-      bookSession: 'Book Consultation',
-    },
-  }
-
-  const t = content[language]
 
   return (
     <nav
@@ -68,7 +50,7 @@ export default function Navbar() {
                 isScrolled ? 'text-navy-700 hover:text-navy-900' : 'text-white hover:text-gray-200'
               }`}
             >
-              {t.mentors}
+              {t.navbar.mentors}
             </Link>
             <Link
               href="/how-it-works"
@@ -76,7 +58,7 @@ export default function Navbar() {
                 isScrolled ? 'text-navy-700 hover:text-navy-900' : 'text-white hover:text-gray-200'
               }`}
             >
-              {t.howItWorks}
+              {t.navbar.howItWorks}
             </Link>
             <Link
               href="#pricing"
@@ -84,7 +66,7 @@ export default function Navbar() {
                 isScrolled ? 'text-navy-700 hover:text-navy-900' : 'text-white hover:text-gray-200'
               }`}
             >
-              {t.pricing}
+              {t.navbar.pricing}
             </Link>
             <Link
               href="/about"
@@ -92,22 +74,39 @@ export default function Navbar() {
                 isScrolled ? 'text-navy-700 hover:text-navy-900' : 'text-white hover:text-gray-200'
               }`}
             >
-              {t.about}
+              {t.navbar.about}
             </Link>
           </div>
 
           {/* Right Side */}
           <div className="hidden lg:flex items-center space-x-6">
             {/* Language Switcher */}
-            <button
-              onClick={() => setLanguage(language === 'de' ? 'en' : 'de')}
-              className={`flex items-center space-x-2 font-medium transition-colors ${
-                isScrolled ? 'text-navy-700 hover:text-navy-900' : 'text-white hover:text-gray-200'
-              }`}
-            >
-              <Globe size={18} />
-              <span className="font-medium uppercase">{language}</span>
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setLocale('de')}
+                className={`px-3 py-1 rounded-md font-medium text-sm transition-colors ${
+                  locale === 'de'
+                    ? 'bg-teal-500 text-white'
+                    : isScrolled 
+                      ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                }`}
+              >
+                DE
+              </button>
+              <button
+                onClick={() => setLocale('en')}
+                className={`px-3 py-1 rounded-md font-medium text-sm transition-colors ${
+                  locale === 'en'
+                    ? 'bg-teal-500 text-white'
+                    : isScrolled 
+                      ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                }`}
+              >
+                EN
+              </button>
+            </div>
 
             <Link
               href={session ? "/dashboard" : "/login"}
@@ -115,11 +114,11 @@ export default function Navbar() {
                 isScrolled ? 'text-navy-700 hover:text-navy-900' : 'text-white hover:text-gray-200'
               }`}
             >
-              {session ? 'Dashboard' : t.login}
+              {session ? t.navbar.dashboard : t.navbar.login}
             </Link>
 
             <Link href="/matching" className="btn-primary">
-              {t.bookSession}
+              {t.navbar.bookSession}
             </Link>
           </div>
 
@@ -141,52 +140,67 @@ export default function Navbar() {
                 className="text-navy-700 hover:text-navy-900 font-medium px-4 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t.mentors}
+                {t.navbar.mentors}
               </Link>
               <Link
                 href="/how-it-works"
                 className="text-navy-700 hover:text-navy-900 font-medium px-4 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t.howItWorks}
+                {t.navbar.howItWorks}
               </Link>
               <Link
                 href="/pricing"
                 className="text-navy-700 hover:text-navy-900 font-medium px-4 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t.pricing}
+                {t.navbar.pricing}
               </Link>
               <Link
                 href="/about"
                 className="text-navy-700 hover:text-navy-900 font-medium px-4 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t.about}
+                {t.navbar.about}
               </Link>
               <div className="border-t border-gray-200 pt-4 px-4 space-y-3">
-                <button
-                  onClick={() => setLanguage(language === 'de' ? 'en' : 'de')}
-                  className="flex items-center space-x-2 text-navy-700 w-full"
-                >
-                  <Globe size={18} />
-                  <span className="font-medium">
-                    {language === 'de' ? 'English' : 'Deutsch'}
-                  </span>
-                </button>
+                {/* Language Switcher Mobile */}
+                <div className="flex gap-2 mb-3">
+                  <button
+                    onClick={() => setLocale('de')}
+                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                      locale === 'de'
+                        ? 'bg-teal-500 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    DE
+                  </button>
+                  <button
+                    onClick={() => setLocale('en')}
+                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                      locale === 'en'
+                        ? 'bg-teal-500 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    EN
+                  </button>
+                </div>
+                
                 <Link
                   href={session ? "/dashboard" : "/login"}
                   className="block text-navy-700 font-medium"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {session ? 'Dashboard' : t.login}
+                  {session ? t.navbar.dashboard : t.navbar.login}
                 </Link>
                 <Link
                   href="/matching"
                   className="btn-primary block text-center"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {t.bookSession}
+                  {t.navbar.bookSession}
                 </Link>
               </div>
             </div>
