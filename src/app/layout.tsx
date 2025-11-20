@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import type { Metadata } from 'next'
-import { Inter, Merriweather } from 'next/font/google'
+import { Inter, Lato } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import SessionProvider from '@/components/providers/SessionProvider'
 
@@ -10,10 +10,10 @@ const inter = Inter({
   display: 'swap',
 })
 
-const merriweather = Merriweather({ 
+const lato = Lato({
   weight: ['300', '400', '700', '900'],
   subsets: ['latin'],
-  variable: '--font-merriweather',
+  variable: '--font-lato',
   display: 'swap',
 })
 
@@ -38,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="de" className={`${inter.variable} ${merriweather.variable}`}>
+    <html lang="de" className={`${inter.variable} ${lato.variable}`}>
       <body className="font-sans">
         <SessionProvider>
           {children}

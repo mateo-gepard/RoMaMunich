@@ -47,8 +47,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Merriweather', 'Georgia', 'serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-lato)', 'sans-serif'],
+        display: ['var(--font-lato)', 'sans-serif'],
       },
       fontSize: {
         'display-1': ['4.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
