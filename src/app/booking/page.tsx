@@ -287,7 +287,7 @@ function BookingContent() {
                     <h3 className="font-semibold text-navy-900 mb-3">2. Tutor wählen</h3>
                     <div className="space-y-3">
                       {availableTutors
-                        .filter(t => t.subjects.includes(selectedSubject))
+                        .filter(t => t.subjects?.includes(selectedSubject))
                         .map((tutor) => (
                         <button
                           key={tutor.id}
@@ -301,12 +301,12 @@ function BookingContent() {
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="font-bold text-navy-900">{tutor.name}</h4>
-                              <p className="text-sm text-gray-600">{tutor.subjects.join(', ')}</p>
+                              <p className="text-sm text-gray-600">{tutor.subjects?.join(', ') || ''}</p>
                               <p className="text-xs text-gray-500 mt-1">{tutor.experience} Erfahrung • ⭐ {tutor.rating}</p>
                             </div>
                             <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center">
                               <span className="text-white text-xl font-bold">
-                                {tutor.name.split(' ').map(n => n[0]).join('')}
+                                {tutor.name?.split(' ').map(n => n[0]).join('') || '??'}
                               </span>
                             </div>
                           </div>
