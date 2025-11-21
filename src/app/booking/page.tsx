@@ -1,15 +1,17 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { Calendar, Clock, Video, MapPin, Package, Check, ArrowLeft, User, Mail, Phone } from 'lucide-react'
+import { Calendar, Clock, Video, MapPin, Package, Check, ArrowLeft, User, Mail, Phone, GraduationCap } from 'lucide-react'
 
 interface Tutor {
   id: number
   name: string
   subjects: string[]
+  experience: string
+  rating: number
   image?: string
 }
 
@@ -19,18 +21,16 @@ interface TimeSlot {
 }
 
 function BookingContent() {
-  const searchParams = useSearchParams()
   const router = useRouter()
   const { data: session } = useSession()
-  const tutorId = searchParams.get('tutor')
 
-  const [tutor, setTutor] = useState<Tutor | null>(null)
+  // Core booking state
+  const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null)
+  const [selectedSubject, setSelectedSubject] = useState<string>('')
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [selectedLocation, setSelectedLocation] = useState<'online' | 'in-person'>('online')
   const [selectedPackage, setSelectedPackage] = useState<'trial' | '10h' | '20h'>('trial')
-  const [selectedSubject, setSelectedSubject] = useState<string>('')
-  const [selectedTutorOption, setSelectedTutorOption] = useState<number | null>(null)
   const [step, setStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [hasTrialSession, setHasTrialSession] = useState(false)
@@ -67,7 +67,7 @@ function BookingContent() {
 
   const subjects = ['Mathematik', 'Physik', 'Chemie', 'Informatik', 'Biologie', 'Englisch', 'Deutsch']
 
-  const availableTutors = [
+  const availableTutors: Tutor[] = [
     { id: 1, name: 'Max Müller', subjects: ['Mathematik', 'Physik'], experience: '3 Jahre', rating: 4.9 },
     { id: 2, name: 'Sophie Weber', subjects: ['Informatik', 'Mathematik'], experience: '2 Jahre', rating: 4.8 },
     { id: 3, name: 'Leon Schmidt', subjects: ['Mathematik', 'Chemie'], experience: '4 Jahre', rating: 5.0 },
@@ -75,29 +75,29 @@ function BookingContent() {
     { id: 5, name: 'Tim Wagner', subjects: ['Biologie', 'Chemie'], experience: '2 Jahre', rating: 4.7 },
   ]
 
-  // Mock tutor data
-  useEffect(() => {
-    const mockTutors = [
-      { id: 1, name: 'Max Müller', subjects: ['Mathematik', 'Physik'] },
-      { id: 2, name: 'Sophie Weber', subjects: ['Informatik', 'Mathematik'] },
-      { id: 3, name: 'Leon Schmidt', subjects: ['Mathematik', 'Chemie'] },
-    ]
-    const foundTutor = mockTutors.find(t => t.id === Number(tutorId))
-    setTutor(foundTutor || mockTutors[0])
-  }, [tutorId])
-
   // Check if user has already booked a trial session
   useEffect(() => {
     const checkTrialSession = async () => {
       if (!session?.user?.email) return
       
       try {
-        // API call to check if user has trial session
-        const response = await fetch('/api/bookings?userId=' + session.user.email)
+        const response = await fetch('/api/bookings')
         if (response.ok) {
-          const bookings = await response.json()
-          // Check for package field (not packageType)
+          const data = await response.json()
+          const bookings = data.sessions || []
           const hasTrial = bookings.some((b: any) => b.package === 'trial')
+          setHasTrialSession(hasTrial)
+          if (hasTrial) {
+            setSelectedPackage('10h')
+          }
+        }
+      } catch (error) {
+        console.error('Error checking trial session:', error)
+      }
+    }
+    
+    checkTrialSession()
+  }, [session])
           setHasTrialSession(hasTrial)
           // If has trial, default to 10h package
           if (hasTrial) {
@@ -163,14 +163,15 @@ function BookingContent() {
   const handleSubmit = async () => {
     setIsLoading(true)
 
-    // Use selected tutor if available (for 2nd+ bookings), otherwise use URL tutor
-    const finalTutor = selectedTutorOption 
-      ? availableTutors.find(t => t.id === selectedTutorOption)
-      : tutor
-
-    // Validate that we have all required data
-    if (!finalTutor && !tutor) {
+    // Validate that all required data is present
+    if (!selectedTutor) {
       alert('Bitte wähle einen Tutor aus.')
+      setIsLoading(false)
+      return
+    }
+
+    if (!selectedSubject) {
+      alert('Bitte wähle ein Fach aus.')
       setIsLoading(false)
       return
     }
@@ -182,9 +183,9 @@ function BookingContent() {
     }
 
     const bookingData = {
-      tutorId: finalTutor?.id || tutor?.id,
-      tutorName: finalTutor?.name || tutor?.name,
-      subject: selectedSubject || (tutor?.subjects?.[0] || 'Mathematik'),
+      tutorId: selectedTutor.id,
+      tutorName: selectedTutor.name,
+      subject: selectedSubject,
       date: selectedDate.toISOString(),
       time: selectedTime,
       location: selectedLocation,
@@ -252,7 +253,7 @@ function BookingContent() {
         {/* Progress Steps */}
         <div className="mb-8">
           <div className="flex items-center justify-center space-x-4">
-            {[1, 2, 3, 4].map((s) => (
+            {[1, 2, 3, 4, 5].map((s) => (
               <div key={s} className="flex items-center">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
@@ -261,18 +262,19 @@ function BookingContent() {
                 >
                   {s}
                 </div>
-                {s < 4 && (
+                {s < 5 && (
                   <div
-                    className={`w-16 h-1 ${step > s ? 'bg-teal-500' : 'bg-gray-300'}`}
+                    className={`w-12 h-1 ${step > s ? 'bg-teal-500' : 'bg-gray-300'}`}
                   />
                 )}
               </div>
             ))}
           </div>
           <div className="flex justify-center mt-3 text-sm text-gray-600">
-            <div className="grid grid-cols-4 gap-16 text-center">
+            <div className="grid grid-cols-5 gap-8 text-center">
+              <span>Fach & Tutor</span>
               <span>Paket</span>
-              <span>Datum & Zeit</span>
+              <span>Termin</span>
               <span>Ort</span>
               <span>Kontakt</span>
             </div>
@@ -282,8 +284,78 @@ function BookingContent() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Step 1: Package Selection */}
+            {/* Step 1: Subject & Tutor Selection */}
             {step === 1 && (
+              <div className="bg-white rounded-xl shadow-soft p-8">
+                <h2 className="text-2xl font-bold text-navy-900 mb-6">Fach & Tutor wählen</h2>
+                
+                {/* Subject Selection */}
+                <div className="mb-6">
+                  <h3 className="font-semibold text-navy-900 mb-3">1. Fach wählen</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {subjects.map((subject) => (
+                      <button
+                        key={subject}
+                        onClick={() => setSelectedSubject(subject)}
+                        className={`p-3 rounded-lg border-2 transition-all ${
+                          selectedSubject === subject
+                            ? 'border-teal-500 bg-teal-50 text-teal-900'
+                            : 'border-gray-300 hover:border-gray-400 text-gray-700'
+                        }`}
+                      >
+                        {subject}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tutor Selection */}
+                {selectedSubject && (
+                  <div className="mb-6">
+                    <h3 className="font-semibold text-navy-900 mb-3">2. Tutor wählen</h3>
+                    <div className="space-y-3">
+                      {availableTutors
+                        .filter(t => t.subjects.includes(selectedSubject))
+                        .map((tutor) => (
+                        <button
+                          key={tutor.id}
+                          onClick={() => setSelectedTutor(tutor)}
+                          className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+                            selectedTutor?.id === tutor.id
+                              ? 'border-teal-500 bg-teal-50'
+                              : 'border-gray-300 hover:border-gray-400'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-bold text-navy-900">{tutor.name}</h4>
+                              <p className="text-sm text-gray-600">{tutor.subjects.join(', ')}</p>
+                              <p className="text-xs text-gray-500 mt-1">{tutor.experience} Erfahrung • ⭐ {tutor.rating}</p>
+                            </div>
+                            <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center">
+                              <span className="text-white text-xl font-bold">
+                                {tutor.name.split(' ').map(n => n[0]).join('')}
+                              </span>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setStep(2)}
+                  disabled={!selectedSubject || !selectedTutor}
+                  className="w-full mt-6 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Weiter zum Paket
+                </button>
+              </div>
+            )}
+
+            {/* Step 2: Package Selection */}
+            {step === 2 && (
               <div className="bg-white rounded-xl shadow-soft p-8">
                 <h2 className="text-2xl font-bold text-navy-900 mb-6">Paket wählen</h2>
                 {hasTrialSession && (
@@ -321,32 +393,22 @@ function BookingContent() {
                     </button>
                   ))}
                 </div>
-                <button
-                  onClick={() => hasTrialSession ? setStep(1.5) : setStep(2)}
-                  className="w-full mt-6 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors"
-                >
-                  {hasTrialSession ? 'Weiter zu Tutor & Fach' : 'Weiter zu Datum & Zeit'}
-                </button>
+                <div className="flex space-x-4 mt-6">
+                  <button
+                    onClick={() => setStep(1)}
+                    className="flex-1 bg-gray-200 text-navy-900 font-bold py-4 rounded-lg hover:bg-gray-300 transition-colors"
+                  >
+                    Zurück
+                  </button>
+                  <button
+                    onClick={() => setStep(3)}
+                    className="flex-1 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors"
+                  >
+                    Weiter zu Datum & Zeit
+                  </button>
+                </div>
               </div>
             )}
-
-            {/* Step 1.5: Tutor & Subject Selection (Only for 2nd+ booking) */}
-            {step === 1.5 && (
-              <div className="bg-white rounded-xl shadow-soft p-8">
-                <h2 className="text-2xl font-bold text-navy-900 mb-6">Tutor & Fach wählen</h2>
-                
-                {/* Subject Selection */}
-                <div className="mb-6">
-                  <h3 className="font-semibold text-navy-900 mb-3">Fach wählen</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {subjects.map((subject) => (
-                      <button
-                        key={subject}
-                        onClick={() => setSelectedSubject(subject)}
-                        className={`p-3 rounded-lg border-2 transition-all ${
-                          selectedSubject === subject
-                            ? 'border-teal-500 bg-teal-50 text-teal-900'
-                            : 'border-gray-300 hover:border-gray-400 text-gray-700'
                         }`}
                       >
                         {subject}
@@ -464,13 +526,13 @@ function BookingContent() {
 
                 <div className="flex space-x-4 mt-6">
                   <button
-                    onClick={() => setStep(1)}
+                    onClick={() => setStep(2)}
                     className="flex-1 bg-gray-200 text-navy-900 font-bold py-4 rounded-lg hover:bg-gray-300 transition-colors"
                   >
                     Zurück
                   </button>
                   <button
-                    onClick={() => selectedTime && setStep(3)}
+                    onClick={() => selectedTime && setStep(4)}
                     disabled={!selectedTime}
                     className="flex-1 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -480,8 +542,8 @@ function BookingContent() {
               </div>
             )}
 
-            {/* Step 3: Location Selection */}
-            {step === 3 && (
+            {/* Step 4: Location Selection */}
+            {step === 4 && (
               <div className="bg-white rounded-xl shadow-soft p-8">
                 <h2 className="text-2xl font-bold text-navy-900 mb-6">Ort wählen</h2>
                 <div className="space-y-4">
@@ -522,13 +584,13 @@ function BookingContent() {
 
                 <div className="flex space-x-4 mt-6">
                   <button
-                    onClick={() => setStep(2)}
+                    onClick={() => setStep(3)}
                     className="flex-1 bg-gray-200 text-navy-900 font-bold py-4 rounded-lg hover:bg-gray-300 transition-colors"
                   >
                     Zurück
                   </button>
                   <button
-                    onClick={() => setStep(4)}
+                    onClick={() => setStep(5)}
                     className="flex-1 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors"
                   >
                     Weiter zu Kontakt
@@ -537,8 +599,8 @@ function BookingContent() {
               </div>
             )}
 
-            {/* Step 4: Contact Information */}
-            {step === 4 && (
+            {/* Step 5: Contact Information */}
+            {step === 5 && (
               <div className="bg-white rounded-xl shadow-soft p-8">
                 <h2 className="text-2xl font-bold text-navy-900 mb-6">Kontaktinformationen</h2>
                 <div className="space-y-4">
@@ -608,7 +670,7 @@ function BookingContent() {
 
                 <div className="flex space-x-4 mt-6">
                   <button
-                    onClick={() => setStep(3)}
+                    onClick={() => setStep(4)}
                     className="flex-1 bg-gray-200 text-navy-900 font-bold py-4 rounded-lg hover:bg-gray-300 transition-colors"
                   >
                     Zurück
@@ -631,6 +693,17 @@ function BookingContent() {
               <h3 className="text-xl font-bold text-navy-900 mb-4">Zusammenfassung</h3>
               
               <div className="space-y-4">
+                {selectedTutor && selectedSubject && (
+                  <div className="flex items-start space-x-3">
+                    <GraduationCap className="text-white mt-1" size={20} />
+                    <div>
+                      <div className="text-sm text-gray-600">Tutor & Fach</div>
+                      <div className="font-semibold text-navy-900">{selectedTutor.name}</div>
+                      <div className="text-sm text-gray-700">{selectedSubject}</div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-start space-x-3">
                   <Package className="text-white mt-1" size={20} />
                   <div>
@@ -654,7 +727,7 @@ function BookingContent() {
                   </div>
                 )}
 
-                {step >= 3 && (
+                {step >= 4 && (
                   <div className="flex items-start space-x-3">
                     {selectedLocation === 'online' ? (
                       <Video className="text-white mt-1" size={20} />
