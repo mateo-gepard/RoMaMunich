@@ -214,7 +214,7 @@ export default function MentorsPage() {
                     <p className="text-gray-600 text-sm">{tutor.age} Jahre</p>
                   </div>
                   <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <Award className="text-white" size={24} />
+                    <Award className="text-teal-600" size={24} />
                   </div>
                 </div>
 
@@ -231,8 +231,8 @@ export default function MentorsPage() {
                 </div>
 
                 {/* Early Study */}
-                <div className="flex items-center space-x-2 mb-4 text-white">
-                  <GraduationCap size={18} />
+                <div className="flex items-center space-x-2 mb-4 text-gray-700">
+                  <GraduationCap size={18} className="text-teal-500" />
                   <span className="text-sm font-medium">{tutor.earlyStudy}</span>
                 </div>
 
@@ -256,7 +256,7 @@ export default function MentorsPage() {
                     <div className="text-xs text-gray-500">{tutor.sessions} Sessions</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold text-white">
+                    <div className="text-lg font-bold text-navy-900">
                       Erste Stunde kostenlos
                     </div>
                     <div className="text-xs text-gray-500">Danach 35€/h</div>

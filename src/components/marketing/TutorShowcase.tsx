@@ -134,7 +134,7 @@ export default function TutorShowcase() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold text-white">
+                    <div className="text-lg font-bold text-navy-900">
                       Erste Stunde kostenlos
                     </div>
                     <div className="text-xs text-gray-500">
