@@ -18,6 +18,7 @@ import {
   Plus,
   ChevronLeft,
   ChevronRight,
+  Edit3,
 } from 'lucide-react'
 import Link from 'next/link'
 import Calendar from 'react-calendar'
@@ -48,10 +49,13 @@ export default function DashboardPage() {
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [showMessageModal, setShowMessageModal] = useState(false)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const [messageText, setMessageText] = useState('')
   const [feedbackRating, setFeedbackRating] = useState(5)
   const [feedbackText, setFeedbackText] = useState('')
   const [cancellationReason, setCancellationReason] = useState('')
+  const [editSubject, setEditSubject] = useState('')
+  const [editTutorName, setEditTutorName] = useState('')
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list')
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
@@ -103,9 +107,11 @@ export default function DashboardPage() {
         const response = await fetch('/api/bookings')
         if (response.ok) {
           const data = await response.json()
-          setSessions(data.sessions || [])
+          // Filter out cancelled sessions for regular display
+          const activeSessions = (data.sessions || []).filter((s: Session) => s.status !== 'cancelled')
+          setSessions(activeSessions)
           
-          // For master tutor, also load all bookings
+          // For master tutor, also load all bookings (including cancelled)
           if (isMasterTutor) {
             setAllBookings(data.allBookings || data.sessions || [])
           }
@@ -256,10 +262,14 @@ export default function DashboardPage() {
       })
 
       if (response.ok) {
-        // Update local state
-        setAllBookings(allBookings.map(b => 
-          b.id === bookingId ? { ...b, status: 'confirmed' } : b
-        ))
+        // Reload sessions to show confirmed bookings
+        const refreshResponse = await fetch('/api/bookings')
+        if (refreshResponse.ok) {
+          const data = await refreshResponse.json()
+          const activeSessions = (data.sessions || []).filter((s: Session) => s.status !== 'cancelled')
+          setSessions(activeSessions)
+          setAllBookings(data.allBookings || data.sessions || [])
+        }
         alert('Buchung erfolgreich bestätigt!')
       } else {
         const data = await response.json()
@@ -270,6 +280,51 @@ export default function DashboardPage() {
       alert('Ein Fehler ist aufgetreten.')
     } finally {
       setApprovalLoading(null)
+    }
+  }
+
+  const handleEditSession = (sess: Session) => {
+    setSelectedSession(sess)
+    setEditSubject(sess.subject || '')
+    setEditTutorName(sess.tutorName || '')
+    setShowEditModal(true)
+  }
+
+  const handleUpdateSession = async () => {
+    if (!selectedSession) return
+    
+    setLoading(true)
+    try {
+      const response = await fetch('/api/bookings/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: selectedSession.id,
+          subject: editSubject,
+          tutorName: editTutorName,
+        }),
+      })
+
+      if (response.ok) {
+        // Update local state
+        setSessions(sessions.map(s => 
+          s.id === selectedSession.id 
+            ? { ...s, subject: editSubject, tutorName: editTutorName } 
+            : s
+        ))
+        setShowEditModal(false)
+        setSelectedSession(null)
+        alert('Session erfolgreich aktualisiert!')
+      } else {
+        const error = await response.json()
+        console.error('Error response:', error)
+        alert('Fehler beim Aktualisieren der Session.')
+      }
+    } catch (error) {
+      console.error('Error updating session:', error)
+      alert('Ein Fehler ist aufgetreten.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -340,7 +395,6 @@ export default function DashboardPage() {
   }
 
   const upcomingSessions = sessions.filter(s => {
-    if (s.status === 'cancelled') return false
     if (s.status === 'pending' || s.status === 'confirmed') {
       const endTime = getSessionEndTime(s)
       return endTime > now
@@ -349,7 +403,7 @@ export default function DashboardPage() {
   }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
   const pastSessions = sessions.filter(s => {
-    if (s.status === 'completed' || s.status === 'cancelled') return true
+    if (s.status === 'completed') return true
     if (s.status === 'confirmed') {
       const endTime = getSessionEndTime(s)
       return endTime <= now
@@ -719,6 +773,15 @@ export default function DashboardPage() {
                             <h3 className="font-semibold text-navy-900 text-lg">
                               {sess.subject} mit {sess.tutorName}
                             </h3>
+                            {isMasterTutor && (
+                              <button
+                                onClick={() => handleEditSession(sess)}
+                                className="p-1 text-gray-400 hover:text-navy-600 transition-colors"
+                                title="Titel bearbeiten"
+                              >
+                                <Edit3 size={16} />
+                              </button>
+                            )}
                           </div>
                           <div className="flex flex-wrap gap-3 text-sm text-gray-600">
                             <span className="flex items-center gap-1">
@@ -1050,6 +1113,79 @@ export default function DashboardPage() {
                 className="flex-1 px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors font-medium disabled:opacity-50"
               >
                 {loading ? 'Wird gesendet...' : 'Feedback senden'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Session Modal (Master Tutor) */}
+      {showEditModal && selectedSession && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-navy-900">
+                Session bearbeiten
+              </h3>
+              <button
+                onClick={() => {
+                  setShowEditModal(false)
+                  setSelectedSession(null)
+                  setEditSubject('')
+                  setEditTutorName('')
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Fach
+              </label>
+              <input
+                type="text"
+                value={editSubject}
+                onChange={(e) => setEditSubject(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-600 focus:border-transparent"
+                placeholder="z.B. Mathematik"
+              />
+            </div>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tutor Name
+              </label>
+              <input
+                type="text"
+                value={editTutorName}
+                onChange={(e) => setEditTutorName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-600 focus:border-transparent"
+                placeholder="z.B. Max Müller"
+              />
+            </div>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <p className="text-sm text-blue-800">
+                <strong>Vorschau:</strong> {editSubject || 'Fach'} mit {editTutorName || 'Tutor'}
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowEditModal(false)
+                  setSelectedSession(null)
+                  setEditSubject('')
+                  setEditTutorName('')
+                }}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={handleUpdateSession}
+                disabled={loading || !editSubject.trim() || !editTutorName.trim()}
+                className="flex-1 px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors font-medium disabled:opacity-50"
+              >
+                {loading ? 'Wird gespeichert...' : 'Speichern'}
               </button>
             </div>
           </div>

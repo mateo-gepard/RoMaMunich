@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
     const {
       tutorId,
       tutorName,
+      subject,
       date,
       time,
       location,
@@ -26,6 +27,7 @@ export async function POST(request: NextRequest) {
       userId: session?.user?.id || null,
       tutorId,
       tutorName,
+      subject: subject || 'Nicht angegeben',
       date,
       time,
       location,
@@ -68,6 +70,7 @@ export async function POST(request: NextRequest) {
                 
                 <div class="info-box">
                   <h3 style="margin-top: 0; color: #1a365d;">Buchungsdetails</h3>
+                  <p><strong>Fach:</strong> ${subject || 'Nicht angegeben'}</p>
                   <p><strong>Mentor:</strong> ${tutorName}</p>
                   <p><strong>Datum:</strong> ${new Date(date).toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                   <p><strong>Uhrzeit:</strong> ${time} Uhr</p>
