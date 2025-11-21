@@ -62,7 +62,18 @@ export async function GET(request: NextRequest) {
           }
         })
 
+        // Filter out hidden conversations for master tutor
+        const hiddenConvsSnapshot = await adminDb
+          .collection('hiddenConversations')
+          .where('userId', '==', userId)
+          .get()
+        
+        const hiddenConvIds = new Set(
+          hiddenConvsSnapshot.docs.map(doc => doc.data().conversationId)
+        )
+
         const conversations = Array.from(conversationsMap.values())
+          .filter(conv => !hiddenConvIds.has(conv.conversationId))
           .sort((a, b) => new Date(b.lastMessage.createdAt).getTime() - new Date(a.lastMessage.createdAt).getTime())
 
         return NextResponse.json({ conversations })
@@ -117,7 +128,18 @@ export async function GET(request: NextRequest) {
         conv.unreadCount = unread
       })
 
+      // Filter out hidden conversations
+      const hiddenConvsSnapshot = await adminDb
+        .collection('hiddenConversations')
+        .where('userId', '==', userId)
+        .get()
+      
+      const hiddenConvIds = new Set(
+        hiddenConvsSnapshot.docs.map(doc => doc.data().conversationId)
+      )
+
       const conversations = Array.from(conversationsMap.values())
+        .filter(conv => !hiddenConvIds.has(conv.conversationId))
         .sort((a, b) => new Date(b.lastMessage.createdAt).getTime() - new Date(a.lastMessage.createdAt).getTime())
 
       return NextResponse.json({ conversations })

@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { MessageCircle, ArrowLeft, Send, Clock, CheckCheck } from 'lucide-react'
+import { MessageCircle, ArrowLeft, Send, Clock, CheckCheck, X } from 'lucide-react'
 import { useEffect, useState, useRef, Suspense } from 'react'
 
 interface Message {
@@ -62,6 +62,35 @@ function MessagesContent() {
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handleDeleteConversation = async (conversationId: string, e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent selecting the conversation
+    
+    if (!confirm('Diese Konversation ausblenden? (Sie wird nur für dich verborgen)')) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/messages/hide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conversationId })
+      })
+
+      if (response.ok) {
+        // Remove from local state
+        setConversations(prev => prev.filter(c => c.conversationId !== conversationId))
+        if (selectedConversation === conversationId) {
+          setSelectedConversation(null)
+        }
+      } else {
+        alert('Fehler beim Ausblenden der Konversation')
+      }
+    } catch (error) {
+      console.error('Error hiding conversation:', error)
+      alert('Fehler beim Ausblenden der Konversation')
+    }
   }
 
   useEffect(() => {
@@ -239,44 +268,55 @@ function MessagesContent() {
               ) : (
                 <div className="divide-y divide-gray-200">
                   {conversations.map(conv => (
-                    <button
+                    <div
                       key={conv.conversationId}
-                      onClick={() => setSelectedConversation(conv.conversationId)}
-                      className={`w-full p-4 text-left hover:bg-gray-50 transition-colors ${
+                      className={`relative group ${
                         selectedConversation === conv.conversationId ? 'bg-teal-50' : ''
                       }`}
                     >
-                      <div className="flex items-start justify-between mb-1">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-navy-900 text-sm">
-                            {isMasterTutor ? `${conv.studentName} → ${conv.tutorName}` : conv.tutorName}
-                          </h3>
-                          {isMasterTutor && (
-                            <p className="text-xs text-gray-500 mt-0.5">
-                              Tutor: {conv.tutorName}
-                            </p>
+                      <button
+                        onClick={() => setSelectedConversation(conv.conversationId)}
+                        className={`w-full p-4 text-left hover:bg-gray-50 transition-colors`}
+                      >
+                        <div className="flex items-start justify-between mb-1">
+                          <div className="flex-1 pr-8">
+                            <h3 className="font-semibold text-navy-900 text-sm">
+                              {isMasterTutor ? `${conv.studentName} → ${conv.tutorName}` : conv.tutorName}
+                            </h3>
+                            {isMasterTutor && (
+                              <p className="text-xs text-gray-500 mt-0.5">
+                                Tutor: {conv.tutorName}
+                              </p>
+                            )}
+                          </div>
+                          {conv.unreadCount > 0 && (
+                            <span className="bg-teal-600 text-white text-xs px-2 py-0.5 rounded-full">
+                              {conv.unreadCount}
+                            </span>
                           )}
                         </div>
-                        {conv.unreadCount > 0 && (
-                          <span className="bg-teal-600 text-white text-xs px-2 py-0.5 rounded-full">
-                            {conv.unreadCount}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-600 line-clamp-2 mb-1">
-                        {conv.lastMessage.isFromMe && 'Du: '}
-                        {conv.lastMessage.content}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {new Date(conv.lastMessage.createdAt).toLocaleDateString('de-DE', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </p>
-                    </button>
+                        <p className="text-sm text-gray-600 line-clamp-2 mb-1">
+                          {conv.lastMessage.isFromMe && 'Du: '}
+                          {conv.lastMessage.content}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {new Date(conv.lastMessage.createdAt).toLocaleDateString('de-DE', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteConversation(conv.conversationId, e)}
+                        className="absolute top-2 right-2 p-1.5 rounded-full bg-white hover:bg-red-50 text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all shadow-sm border border-gray-200"
+                        title="Konversation ausblenden"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
                   ))}
                 </div>
               )}
