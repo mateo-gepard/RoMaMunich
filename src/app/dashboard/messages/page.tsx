@@ -24,6 +24,8 @@ interface Conversation {
   conversationId: string
   tutorId: string
   tutorName: string
+  studentId: string
+  studentName: string
   lastMessage: {
     content: string
     createdAt: string
@@ -31,6 +33,13 @@ interface Conversation {
   }
   unreadCount: number
 }
+
+interface Tutor {
+  id: string
+  name: string
+}
+
+const MASTER_TUTOR_EMAIL = 'mateo.mamaladze@gmail.com'
 
 function MessagesContent() {
   const { data: session, status } = useSession()
@@ -44,7 +53,11 @@ function MessagesContent() {
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
+  const [selectedTutorId, setSelectedTutorId] = useState<string>('')
+  const [availableTutors, setAvailableTutors] = useState<Tutor[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const isMasterTutor = session?.user?.email === MASTER_TUTOR_EMAIL
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
@@ -77,9 +90,20 @@ function MessagesContent() {
 
   const loadConversations = async () => {
     try {
-      const response = await fetch('/api/messages')
+      const url = isMasterTutor ? '/api/messages?masterView=true' : '/api/messages'
+      const response = await fetch(url)
       const data = await response.json()
       setConversations(data.conversations || [])
+      
+      // Extract unique tutors for master tutor dropdown
+      if (isMasterTutor && data.conversations) {
+        const tutors = new Map<string, string>()
+        data.conversations.forEach((conv: Conversation) => {
+          tutors.set(conv.tutorId, conv.tutorName)
+        })
+        const tutorList = Array.from(tutors.entries()).map(([id, name]) => ({ id, name }))
+        setAvailableTutors(tutorList)
+      }
     } catch (error) {
       console.error('Error loading conversations:', error)
     } finally {
@@ -113,20 +137,36 @@ function MessagesContent() {
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !selectedConversation) return
 
+    // Master tutor must select a tutor to reply as
+    if (isMasterTutor && !selectedTutorId) {
+      alert('Bitte wähle einen Tutor aus, als der du antworten möchtest')
+      return
+    }
+
     setSending(true)
     try {
       const conv = conversations.find(c => c.conversationId === selectedConversation)
       if (!conv) return
 
+      // For master tutor, use selected tutor; for regular users, use their own data
+      const replyAsTutorId = isMasterTutor ? selectedTutorId : conv.tutorId
+      const replyAsTutorName = isMasterTutor 
+        ? availableTutors.find(t => t.id === selectedTutorId)?.name || 'Tutor'
+        : conv.tutorName
+
       const response = await fetch('/api/messages/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tutorId: conv.tutorId,
-          tutorName: conv.tutorName,
+          tutorId: isMasterTutor ? conv.studentId : conv.tutorId,
+          tutorName: isMasterTutor ? conv.studentName : conv.tutorName,
           subject: 'Antwort',
           message: newMessage,
-          sessionId: null
+          sessionId: null,
+          masterTutorOverride: isMasterTutor ? {
+            sendAsId: replyAsTutorId,
+            sendAsName: replyAsTutorName
+          } : undefined
         })
       })
 
@@ -171,7 +211,14 @@ function MessagesContent() {
               <ArrowLeft className="w-6 h-6 text-navy-600" />
               <span className="font-semibold text-navy-900">Zurück zum Dashboard</span>
             </Link>
-            <h1 className="text-xl font-bold text-navy-900">Nachrichten</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold text-navy-900">Nachrichten</h1>
+              {isMasterTutor && (
+                <span className="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full">
+                  🔑 MASTER TUTOR
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -199,7 +246,16 @@ function MessagesContent() {
                       }`}
                     >
                       <div className="flex items-start justify-between mb-1">
-                        <h3 className="font-semibold text-navy-900 text-sm">{conv.tutorName}</h3>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-navy-900 text-sm">
+                            {isMasterTutor ? `${conv.studentName} → ${conv.tutorName}` : conv.tutorName}
+                          </h3>
+                          {isMasterTutor && (
+                            <p className="text-xs text-gray-500 mt-0.5">
+                              Tutor: {conv.tutorName}
+                            </p>
+                          )}
+                        </div>
                         {conv.unreadCount > 0 && (
                           <span className="bg-teal-600 text-white text-xs px-2 py-0.5 rounded-full">
                             {conv.unreadCount}
@@ -269,6 +325,25 @@ function MessagesContent() {
                 </div>
 
                 <div className="p-4 border-t border-gray-200">
+                  {isMasterTutor && (
+                    <div className="mb-3">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Antworten als:
+                      </label>
+                      <select
+                        value={selectedTutorId}
+                        onChange={(e) => setSelectedTutorId(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-yellow-50"
+                      >
+                        <option value="">-- Tutor auswählen --</option>
+                        {availableTutors.map(tutor => (
+                          <option key={tutor.id} value={tutor.id}>
+                            {tutor.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   <div className="flex gap-2">
                     <input
                       type="text"

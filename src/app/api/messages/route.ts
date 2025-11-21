@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/authOptions'
 import { adminDb } from '@/lib/firebaseAdmin'
 
+const MASTER_TUTOR_EMAIL = 'mateo.mamaladze@gmail.com'
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
@@ -12,7 +14,9 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const conversationId = searchParams.get('conversationId')
+    const masterView = searchParams.get('masterView') === 'true'
     const userId = session.user.id || session.user.email!
+    const isMasterTutor = session.user.email === MASTER_TUTOR_EMAIL
 
     if (conversationId) {
       // Fetch specific conversation messages - nur nach conversationId filtern
@@ -28,7 +32,43 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json({ messages })
     } else {
-      // Fetch all conversations for this user - separate queries ohne orderBy
+      // Master tutor sees ALL conversations
+      if (isMasterTutor && masterView) {
+        const allMessagesSnapshot = await adminDb
+          .collection('messages')
+          .get()
+
+        const allMessages = allMessagesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+
+        // Group by conversation
+        const conversationsMap = new Map()
+        
+        allMessages.forEach((msg: any) => {
+          const existing = conversationsMap.get(msg.conversationId)
+          if (!existing || new Date(msg.createdAt) > new Date(existing.lastMessage.createdAt)) {
+            conversationsMap.set(msg.conversationId, {
+              conversationId: msg.conversationId,
+              tutorId: msg.recipientId.startsWith('tutor') || msg.recipientId.includes('@') && msg.recipientId !== msg.senderId ? msg.recipientId : msg.senderId,
+              tutorName: msg.recipientId.startsWith('tutor') || msg.recipientId.includes('@') && msg.recipientId !== msg.senderId ? msg.recipientName : msg.senderName,
+              studentId: msg.senderId.includes('@') && !msg.senderId.startsWith('tutor') ? msg.senderId : msg.recipientId,
+              studentName: msg.senderId.includes('@') && !msg.senderId.startsWith('tutor') ? msg.senderName : msg.recipientName,
+              lastMessage: {
+                content: msg.content,
+                createdAt: msg.createdAt,
+                isFromMe: false // Master views all as external
+              },
+              unreadCount: 0
+            })
+          }
+        })
+
+        const conversations = Array.from(conversationsMap.values())
+          .sort((a, b) => new Date(b.lastMessage.createdAt).getTime() - new Date(a.lastMessage.createdAt).getTime())
+
+        return NextResponse.json({ conversations })
+      }
+
+      // Regular user: Fetch all conversations for this user - separate queries ohne orderBy
       const sentMessagesSnapshot = await adminDb
         .collection('messages')
         .where('senderId', '==', userId)
@@ -55,6 +95,8 @@ export async function GET(request: NextRequest) {
             conversationId: msg.conversationId,
             tutorId: msg.senderId === userId ? msg.recipientId : msg.senderId,
             tutorName: msg.senderId === userId ? msg.recipientName : msg.senderName,
+            studentId: msg.senderId === userId ? msg.senderId : msg.recipientId,
+            studentName: msg.senderId === userId ? msg.senderName : msg.recipientName,
             lastMessage: {
               content: msg.content,
               createdAt: msg.createdAt,

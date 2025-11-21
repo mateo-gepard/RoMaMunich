@@ -5,6 +5,7 @@ import { Resend } from 'resend'
 import { adminDb } from '@/lib/firebaseAdmin'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
+const MASTER_TUTOR_EMAIL = 'mateo.mamaladze@gmail.com'
 
 // Unique identifier for conversations
 const generateConversationId = (userId: string, tutorId: string) => {
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { tutorId, tutorName, subject, message, sessionId } = await request.json()
+    const { tutorId, tutorName, subject, message, sessionId, masterTutorOverride } = await request.json()
 
     if (!tutorId || !message) {
       return NextResponse.json(
@@ -27,14 +28,25 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const isMasterTutor = session.user.email === MASTER_TUTOR_EMAIL
+
+    // Determine actual sender based on master tutor override
+    let actualSenderId = session.user.id || session.user.email!
+    let actualSenderName = session.user.name
+
+    if (isMasterTutor && masterTutorOverride) {
+      actualSenderId = masterTutorOverride.sendAsId
+      actualSenderName = masterTutorOverride.sendAsName
+    }
+
     // Create conversation ID for threading
-    const conversationId = generateConversationId(session.user.id || session.user.email!, tutorId)
+    const conversationId = generateConversationId(actualSenderId, tutorId)
     
     // Store message in Firestore
     const messageRef = await adminDb.collection('messages').add({
       conversationId,
-      senderId: session.user.id || session.user.email!,
-      senderName: session.user.name,
+      senderId: actualSenderId,
+      senderName: actualSenderName,
       recipientId: tutorId,
       recipientName: tutorName,
       subject,
@@ -52,7 +64,7 @@ export async function POST(request: NextRequest) {
       from: 'RoMa Munich <onboarding@resend.dev>', // Use Resend's test domain (same as booking system)
       to: process.env.ADMIN_EMAIL || 'romamuenchen@gmail.com', // Send to admin email
       replyTo: replyToAddress, // Special address for automatic processing
-      subject: `Neue Nachricht von ${session.user.name} - ${subject}`,
+      subject: `Neue Nachricht von ${actualSenderName} - ${subject}`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -67,6 +79,7 @@ export async function POST(request: NextRequest) {
               .reply-instructions { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 15px 0; border-radius: 5px; }
               .footer { text-align: center; color: #666; margin-top: 30px; font-size: 12px; }
               .conv-id { font-family: monospace; background: #f3f4f6; padding: 2px 6px; border-radius: 3px; }
+              .master-badge { background: #fbbf24; color: #78350f; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: bold; }
             </style>
           </head>
           <body>
@@ -76,12 +89,12 @@ export async function POST(request: NextRequest) {
               </div>
               <div class="content">
                 <p>Hallo Team,</p>
-                <p>Eine neue Nachricht von <strong>${session.user.name}</strong> (${session.user.email}) wurde empfangen.</p>
+                <p>Eine neue Nachricht von <strong>${actualSenderName}</strong> ${isMasterTutor ? '<span class="master-badge">MASTER TUTOR</span>' : `(${session.user.email})`} wurde empfangen.</p>
                 
                 <div class="info-box">
                   <h3 style="margin-top: 0; color: #1a365d;">Nachrichtendetails</h3>
-                  <p><strong>Von:</strong> ${session.user.name}</p>
-                  <p><strong>Email:</strong> ${session.user.email}</p>
+                  <p><strong>Von:</strong> ${actualSenderName}</p>
+                  ${isMasterTutor ? `<p><strong>Gesendet von Master Account:</strong> ${session.user.email}</p>` : `<p><strong>Email:</strong> ${session.user.email}</p>`}
                   <p><strong>Betreff:</strong> ${subject || 'Keine Angabe'}</p>
                   <p><strong>Session ID:</strong> ${sessionId || 'N/A'}</p>
                   <p><strong>Ziel-Tutor:</strong> ${tutorName}</p>
@@ -91,10 +104,11 @@ export async function POST(request: NextRequest) {
                 <div style="display: none;">
                   <!-- Structured tags for automatic parsing -->
                   TUTOR: ${tutorName}
-                  RECIPIENT: ${session.user.name}
+                  RECIPIENT: ${actualSenderName}
                   CONVERSATION_ID: ${conversationId}
                   TUTOR_ID: ${tutorId}
-                  SENDER_ID: ${session.user.id || session.user.email!}
+                  SENDER_ID: ${actualSenderId}
+                  ${isMasterTutor ? `MASTER_ACCOUNT: ${session.user.email}` : ''}
                 </div>
 
                 <div class="message-box">
