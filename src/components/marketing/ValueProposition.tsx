@@ -64,9 +64,9 @@ export default function ValueProposition() {
     <section className="section-padding bg-gray-50">
       <div className="container-premium">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="mb-6">Warum RoMa Munich</h2>
-          <p className="text-xl text-gray-600 leading-relaxed">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 px-4">
+          <h2 className="mb-4 sm:mb-6 text-3xl sm:text-4xl lg:text-5xl">Warum RoMa Munich</h2>
+          <p className="text-lg sm:text-xl text-gray-600 leading-relaxed">
             Wir vereinen zwei Dinge, die im klassischen Nachhilfemarkt praktisch
             nie zusammenkommen: Elite-Fachkompetenz und altersnahe pädagogische
             Zugänglichkeit.
@@ -74,7 +74,7 @@ export default function ValueProposition() {
         </div>
 
         {/* Value Cards Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {values.map((value, index) => {
             const Icon = value.icon
             return (

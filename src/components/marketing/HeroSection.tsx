@@ -14,7 +14,7 @@ export default function HeroSection() {
   ]
 
   return (
-    <section className="relative min-h-screen flex items-center bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 overflow-hidden">
+    <section className="relative min-h-screen flex items-center bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 overflow-hidden pt-16 sm:pt-0">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -22,63 +22,63 @@ export default function HeroSection() {
         }}></div>
       </div>
 
-      <div className="container-premium relative z-10 pt-32 pb-20">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div className="container-premium relative z-10 py-12 sm:py-20 sm:pt-32 sm:pb-20">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-16 items-center">
           {/* Left Column - Content */}
-          <div className="text-white space-y-8 animate-fadeInUp">
+          <div className="text-white space-y-6 sm:space-y-8 animate-fadeInUp">
             {/* Badge */}
-            <div className="inline-flex items-center space-x-2 bg-teal-500/20 border border-teal-500/30 rounded-full px-4 py-2">
+            <div className="inline-flex items-center space-x-2 bg-teal-500/20 border border-teal-500/30 rounded-full px-3 py-1.5 sm:px-4 sm:py-2\">
               <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
-              <span className="text-teal-300 text-sm font-medium">
+              <span className="text-teal-300 text-xs sm:text-sm font-medium">
                 {t.hero.badge}
               </span>
             </div>
 
             {/* Headline */}
             <div>
-              <h1 className="font-serif font-bold text-white mb-4">
+              <h1 className="font-serif font-bold text-white mb-3 sm:mb-4 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight">
                 {t.hero.headline}
                 <br />
                 <span className="text-gradient-teal">{t.hero.subheadline}</span>
               </h1>
-              <p className="text-xl text-gray-300 font-medium">
+              <p className="text-lg sm:text-xl text-gray-300 font-medium">
                 {t.hero.description}
               </p>
             </div>
 
             {/* Description */}
-            <p className="text-lg text-gray-300 leading-relaxed max-w-xl">
+            <p className="text-base sm:text-lg text-gray-300 leading-relaxed max-w-xl">
               {t.hero.bodyText}
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
               <Link
                 href="/matching"
-                className="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-teal-500 text-white font-bold rounded-lg hover:bg-teal-400 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
+                className="inline-flex items-center justify-center space-x-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-teal-500 text-white font-bold rounded-lg hover:bg-teal-400 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95 text-center"
               >
                 <span>{t.hero.cta}</span>
                 <ArrowRight size={20} />
               </Link>
               <Link
                 href="/mentors"
-                className="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/30 hover:bg-white/20 transition-all duration-200"
+                className="inline-flex items-center justify-center space-x-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/30 hover:bg-white/20 transition-all duration-200 active:scale-95 text-center"
               >
                 <span>{t.hero.learnMore}</span>
               </Link>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/20">
+            <div className="grid grid-cols-3 gap-4 sm:gap-6 pt-6 sm:pt-8 border-t border-white/20">
               {stats.map((stat, index) => {
                 const Icon = stat.icon
                 return (
-                  <div key={index} className="space-y-2">
-                    <Icon className="text-teal-500" size={24} />
-                    <div className="text-2xl font-bold text-white">
+                  <div key={index} className="space-y-1 sm:space-y-2">
+                    <Icon className="text-teal-500" size={20} />
+                    <div className="text-xl sm:text-2xl font-bold text-white">
                       {stat.value}
                     </div>
-                    <div className="text-sm text-gray-400">{stat.label}</div>
+                    <div className="text-xs sm:text-sm text-gray-400 leading-tight\">{stat.label}</div>
                   </div>
                 )
               })}
