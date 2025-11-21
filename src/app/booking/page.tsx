@@ -207,33 +207,18 @@ function BookingContent() {
     }
   }
 
-  if (!tutor) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full"></div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container-premium max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/matching/results" className="inline-flex items-center text-teal-500 hover:text-teal-600 mb-4">
+          <Link href="/" className="inline-flex items-center text-teal-500 hover:text-teal-600 mb-4">
             <ArrowLeft size={20} className="mr-2" />
-            Zurück zu den Ergebnissen
+            Zurück zur Startseite
           </Link>
-          <div className="bg-white rounded-xl shadow-soft p-6 flex items-center space-x-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-2xl font-bold">
-                {tutor.name.split(' ').map(n => n[0]).join('')}
-              </span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-navy-900">{tutor.name}</h1>
-              <p className="text-gray-600">{tutor.subjects.join(', ')}</p>
-            </div>
+          <div className="bg-white rounded-xl shadow-soft p-6">
+            <h1 className="text-3xl font-bold text-navy-900">Session buchen</h1>
+            <p className="text-gray-600 mt-2">Wähle deinen perfekten Mentor in nur 5 Schritten</p>
           </div>
         </div>
 
