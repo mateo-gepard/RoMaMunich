@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
           id: doc.id,
           ...doc.data()
         }))
-        .filter(booking => booking.status !== 'cancelled')
+        .filter((booking: any) => booking.status !== 'cancelled')
 
       return NextResponse.json({ sessions: bookings })
     }
