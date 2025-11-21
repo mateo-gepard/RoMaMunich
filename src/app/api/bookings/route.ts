@@ -8,6 +8,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
 })
 
+const MASTER_TUTOR_EMAIL = 'mateo.mamaladze@gmail.com'
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
@@ -15,18 +17,38 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get user's bookings
-    const bookingsSnapshot = await adminDb
-      .collection('bookings')
-      .where('userId', '==', session.user.id)
-      .get()
+    const isMasterTutor = session.user.email === MASTER_TUTOR_EMAIL
 
-    const bookings = bookingsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }))
+    if (isMasterTutor) {
+      // Master tutor sees ALL bookings
+      const allBookingsSnapshot = await adminDb
+        .collection('bookings')
+        .orderBy('createdAt', 'desc')
+        .get()
 
-    return NextResponse.json(bookings)
+      const allBookings = allBookingsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+
+      return NextResponse.json({ 
+        sessions: allBookings,
+        allBookings: allBookings 
+      })
+    } else {
+      // Regular users see only their bookings
+      const bookingsSnapshot = await adminDb
+        .collection('bookings')
+        .where('userId', '==', session.user.id)
+        .get()
+
+      const bookings = bookingsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+
+      return NextResponse.json({ sessions: bookings })
+    }
   } catch (error) {
     console.error('Error fetching bookings:', error)
     return NextResponse.json(

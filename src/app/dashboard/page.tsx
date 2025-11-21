@@ -38,6 +38,8 @@ interface Session {
   meetingLink?: string
 }
 
+const MASTER_TUTOR_EMAIL = 'mateo.mamaladze@gmail.com'
+
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -54,6 +56,14 @@ export default function DashboardPage() {
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list')
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [unreadMessages, setUnreadMessages] = useState(0)
+  
+  // Master tutor functionality
+  const isMasterTutor = session?.user?.email === MASTER_TUTOR_EMAIL
+  const [allBookings, setAllBookings] = useState<any[]>([])
+  const [approvalLoading, setApprovalLoading] = useState<string | null>(null)
+  const [rejectionReason, setRejectionReason] = useState('')
+  const [showRejectModal, setShowRejectModal] = useState(false)
+  const [bookingToReject, setBookingToReject] = useState<any>(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -94,6 +104,11 @@ export default function DashboardPage() {
         if (response.ok) {
           const data = await response.json()
           setSessions(data.sessions || [])
+          
+          // For master tutor, also load all bookings
+          if (isMasterTutor) {
+            setAllBookings(data.allBookings || data.sessions || [])
+          }
         } else {
           setSessions([])
         }
@@ -106,7 +121,7 @@ export default function DashboardPage() {
     if (session) {
       fetchSessions()
     }
-  }, [session])
+  }, [session, isMasterTutor])
 
   const handleCancelSession = async (sessionId: string) => {
     if (!cancellationReason.trim()) {
@@ -198,6 +213,75 @@ export default function DashboardPage() {
       console.error('Error submitting feedback:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Master tutor approval handlers
+  const handleApproveBooking = async (bookingId: string) => {
+    setApprovalLoading(bookingId)
+    try {
+      const response = await fetch('/api/bookings/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId, action: 'approve' }),
+      })
+
+      if (response.ok) {
+        // Update local state
+        setAllBookings(allBookings.map(b => 
+          b.id === bookingId ? { ...b, status: 'confirmed' } : b
+        ))
+        alert('Buchung erfolgreich bestätigt!')
+      } else {
+        const data = await response.json()
+        alert(`Fehler: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Error approving booking:', error)
+      alert('Ein Fehler ist aufgetreten.')
+    } finally {
+      setApprovalLoading(null)
+    }
+  }
+
+  const handleRejectBooking = async () => {
+    if (!bookingToReject) return
+
+    if (!rejectionReason.trim()) {
+      alert('Bitte gib einen Grund für die Ablehnung an.')
+      return
+    }
+
+    setApprovalLoading(bookingToReject.id)
+    try {
+      const response = await fetch('/api/bookings/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          bookingId: bookingToReject.id, 
+          action: 'reject',
+          reason: rejectionReason 
+        }),
+      })
+
+      if (response.ok) {
+        // Update local state
+        setAllBookings(allBookings.map(b => 
+          b.id === bookingToReject.id ? { ...b, status: 'cancelled' } : b
+        ))
+        setShowRejectModal(false)
+        setBookingToReject(null)
+        setRejectionReason('')
+        alert('Buchung abgelehnt.')
+      } else {
+        const data = await response.json()
+        alert(`Fehler: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Error rejecting booking:', error)
+      alert('Ein Fehler ist aufgetreten.')
+    } finally {
+      setApprovalLoading(null)
     }
   }
 
@@ -390,6 +474,98 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
+
+            {/* Master Tutor: Pending Bookings Approval Section */}
+            {isMasterTutor && allBookings.filter(b => b.status === 'pending').length > 0 && (
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-xl p-6 shadow-soft">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center">
+                    <Clock className="text-white" size={20} />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-navy-900">
+                      Buchungen zur Genehmigung
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      {allBookings.filter(b => b.status === 'pending').length} Buchung(en) warten auf Bestätigung
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {allBookings
+                    .filter(b => b.status === 'pending')
+                    .map((booking) => (
+                      <div
+                        key={booking.id}
+                        className="bg-white rounded-lg p-4 border border-amber-200"
+                      >
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="font-semibold text-navy-900">
+                                {booking.contactInfo?.name || 'Unbekannt'}
+                              </h3>
+                              <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
+                                Ausstehend
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
+                              <div className="flex items-center gap-1">
+                                <User size={14} />
+                                <span>{booking.tutorName}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <CalendarIcon size={14} />
+                                <span>
+                                  {new Date(booking.date).toLocaleDateString('de-DE', { 
+                                    day: '2-digit', 
+                                    month: '2-digit', 
+                                    year: 'numeric' 
+                                  })} um {booking.time}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                {booking.location === 'online' ? <Video size={14} /> : <MapPin size={14} />}
+                                <span>{booking.location === 'online' ? 'Online' : 'Vor Ort'}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <span className="font-medium">
+                                  Paket: {booking.packageDetails?.name || booking.package}
+                                </span>
+                              </div>
+                            </div>
+                            {booking.contactInfo?.message && (
+                              <div className="mt-2 text-sm text-gray-600 italic">
+                                "{booking.contactInfo.message}"
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleApproveBooking(booking.id)}
+                              disabled={approvalLoading === booking.id}
+                              className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+                            >
+                              {approvalLoading === booking.id ? '...' : 'Bestätigen'}
+                            </button>
+                            <button
+                              onClick={() => {
+                                setBookingToReject(booking)
+                                setShowRejectModal(true)
+                              }}
+                              disabled={approvalLoading === booking.id}
+                              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+                            >
+                              Ablehnen
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
 
             {/* Calendar View */}
             {viewMode === 'calendar' && (
@@ -850,6 +1026,69 @@ export default function DashboardPage() {
                 className="flex-1 px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors font-medium disabled:opacity-50"
               >
                 {loading ? 'Wird gesendet...' : 'Feedback senden'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reject Booking Modal (Master Tutor) */}
+      {showRejectModal && bookingToReject && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-navy-900">
+                Buchung ablehnen
+              </h3>
+              <button
+                onClick={() => {
+                  setShowRejectModal(false)
+                  setBookingToReject(null)
+                  setRejectionReason('')
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <p className="text-gray-600 mb-4">
+              Möchten Sie die Buchung von{' '}
+              <strong>{bookingToReject.contactInfo?.name}</strong> wirklich ablehnen?
+            </p>
+            <div className="bg-gray-50 p-3 rounded-lg mb-4 text-sm text-gray-700">
+              <p><strong>Datum:</strong> {new Date(bookingToReject.date).toLocaleDateString('de-DE')} um {bookingToReject.time}</p>
+              <p><strong>Tutor:</strong> {bookingToReject.tutorName}</p>
+            </div>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Grund für die Ablehnung *
+              </label>
+              <textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                rows={3}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-600 focus:border-transparent"
+                placeholder="Bitte gib den Grund an (wird an den Kunden gesendet)..."
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowRejectModal(false)
+                  setBookingToReject(null)
+                  setRejectionReason('')
+                }}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={handleRejectBooking}
+                disabled={approvalLoading !== null || !rejectionReason.trim()}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50"
+              >
+                {approvalLoading ? 'Wird abgelehnt...' : 'Ablehnen'}
               </button>
             </div>
           </div>
