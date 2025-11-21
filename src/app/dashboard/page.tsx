@@ -202,15 +202,44 @@ export default function DashboardPage() {
     
     setLoading(true)
     try {
-      // API call to submit feedback
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setFeedbackRating(5)
-      setFeedbackText('')
-      setShowFeedbackModal(false)
-      setSelectedSession(null)
-      alert('Feedback erfolgreich gesendet!')
+      const response = await fetch('/api/bookings/rate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: selectedSession.id,
+          rating: feedbackRating,
+          feedback: feedbackText,
+          bookingData: {
+            tutorId: selectedSession.tutorId,
+            tutorName: selectedSession.tutorName,
+            subject: selectedSession.subject,
+            studentName: session?.user?.name || 'Student',
+            date: selectedSession.date,
+            time: selectedSession.time,
+          }
+        }),
+      })
+
+      if (response.ok) {
+        setFeedbackRating(5)
+        setFeedbackText('')
+        setShowFeedbackModal(false)
+        setSelectedSession(null)
+        // Refresh sessions to show updated rating
+        const refreshResponse = await fetch('/api/bookings')
+        if (refreshResponse.ok) {
+          const data = await refreshResponse.json()
+          setSessions(data.sessions || [])
+        }
+        alert('Feedback erfolgreich gesendet! Der Tutor wurde benachrichtigt.')
+      } else {
+        const error = await response.json()
+        console.error('Error response:', error)
+        alert('Fehler beim Senden des Feedbacks.')
+      }
     } catch (error) {
       console.error('Error submitting feedback:', error)
+      alert('Ein Fehler ist aufgetreten.')
     } finally {
       setLoading(false)
     }

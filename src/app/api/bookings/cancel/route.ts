@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/authOptions'
+import { adminDb } from '@/lib/firebaseAdmin'
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -20,6 +21,15 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Update booking status in Firestore
+    await adminDb.collection('bookings').doc(sessionId).update({
+      status: 'cancelled',
+      cancellationReason: reason,
+      cancelledAt: new Date().toISOString(),
+      cancelledBy: session.user.email,
+      updatedAt: new Date().toISOString()
+    })
 
     // Send cancellation email to tutor
     const tutorEmail = `tutor-${bookingSession.tutorId}@roma-munich.de` // Replace with actual tutor email lookup
@@ -127,6 +137,25 @@ export async function POST(request: NextRequest) {
         </html>
       `,
     })
+
+    // Send notification to admin
+    if (process.env.ADMIN_EMAIL) {
+      await resend.emails.send({
+        from: 'RoMa Munich <noreply@roma-munich.de>',
+        to: process.env.ADMIN_EMAIL,
+        subject: `Session storniert: ${bookingSession.subject}`,
+        html: `
+          <h2>Session wurde storniert</h2>
+          <p><strong>Schüler:</strong> ${session.user.name} (${session.user.email})</p>
+          <p><strong>Tutor:</strong> ${bookingSession.tutorName}</p>
+          <p><strong>Fach:</strong> ${bookingSession.subject}</p>
+          <p><strong>Datum:</strong> ${new Date(bookingSession.date).toLocaleDateString('de-DE')}</p>
+          <p><strong>Uhrzeit:</strong> ${bookingSession.time}</p>
+          <p><strong>Grund:</strong> ${reason}</p>
+          <p><strong>Session ID:</strong> ${sessionId}</p>
+        `
+      })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {
