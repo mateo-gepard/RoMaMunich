@@ -156,7 +156,7 @@ export default function MatchingResultsPage() {
                   {/* Match Reasons */}
                   <div className="pt-4 border-t border-gray-200">
                     <div className="text-sm font-semibold text-navy-900 mb-2">
-                      Warum {tutor.name.split(' ')[0]} zu dir passt:
+                      Warum {tutor.name?.split(' ')[0] || 'dieser Tutor'} zu dir passt:
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {tutor.matchReasons.map((reason, i) => (

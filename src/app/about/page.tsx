@@ -145,7 +145,7 @@ export default function AboutPage() {
             <div key={index} className="bg-white rounded-xl shadow-soft p-8 text-center">
               <div className="w-24 h-24 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-white text-3xl font-bold">
-                  {member.name.split(' ').map(n => n[0]).join('')}
+                  {member.name?.split(' ').map(n => n[0]).join('') || '??'}
                 </span>
               </div>
               <h3 className="text-2xl font-bold text-navy-900 mb-1">

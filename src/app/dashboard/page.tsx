@@ -303,6 +303,7 @@ export default function DashboardPage() {
   const now = new Date()
   
   const getSessionEndTime = (sess: Session) => {
+    if (!sess.endTime) return new Date(sess.date)
     const [hours, minutes] = sess.endTime.split(':').map(Number)
     const endDateTime = new Date(sess.date)
     endDateTime.setHours(hours, minutes, 0, 0)
