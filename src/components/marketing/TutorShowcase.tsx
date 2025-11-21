@@ -51,10 +51,10 @@ export default function TutorShowcase() {
       <div className="container-premium">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center space-x-2 bg-teal-100 rounded-full px-4 py-2 mb-6">
+          <div className="inline-flex items-center space-x-2 bg-teal-500 rounded-full px-4 py-2 mb-6">
             <Sparkles className="text-white" size={20} />
-            <span className="text-teal-800 font-semibold">
-              Featured Mentors
+            <span className="text-white font-semibold">
+              Ausgewählte Mentoren
             </span>
           </div>
           <h2 className="mb-6">Lerne von den Besten</h2>

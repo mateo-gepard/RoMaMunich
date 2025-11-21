@@ -100,23 +100,23 @@ export default function ValueProposition() {
         <div className="mt-16 text-center">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-navy-900 text-white rounded-2xl p-8 flex flex-col items-center">
-              <Shield className="mb-4" size={36} color="#fff" fill="#fff" stroke="#fff" />
-              <h3 className="text-2xl font-bold mb-2">Garantierte Qualität</h3>
+              <Shield className="mb-4" size={36} color="#14b8a6" />
+              <h3 className="text-2xl font-bold mb-2 text-white">Garantierte Qualität</h3>
               <p className="text-gray-300">Alle Mentoren sind geprüft und nachweislich erfolgreich</p>
             </div>
             <div className="bg-navy-900 text-white rounded-2xl p-8 flex flex-col items-center">
-              <Award className="mb-4" size={36} color="#fff" fill="#fff" stroke="#fff" />
-              <h3 className="text-2xl font-bold mb-2">Elite-Expertise</h3>
+              <Award className="mb-4" size={36} color="#14b8a6" />
+              <h3 className="text-2xl font-bold mb-2 text-white">Elite-Expertise</h3>
               <p className="text-gray-300">Olympiade-Sieger und Frühstudierende an Top-Unis</p>
             </div>
             <div className="bg-navy-900 text-white rounded-2xl p-8 flex flex-col items-center">
-              <Target className="mb-4" size={36} color="#fff" fill="#fff" stroke="#fff" />
-              <h3 className="text-2xl font-bold mb-2">Ergebnisorientiert</h3>
+              <Target className="mb-4" size={36} color="#14b8a6" />
+              <h3 className="text-2xl font-bold mb-2 text-white">Ergebnisorientiert</h3>
               <p className="text-gray-300">Klare Ziele, messbare Fortschritte, transparentes Tracking</p>
             </div>
             <div className="bg-navy-900 text-white rounded-2xl p-8 flex flex-col items-center">
-              <TrendingUp className="mb-4" size={36} color="#fff" fill="#fff" stroke="#fff" />
-              <h3 className="text-2xl font-bold mb-2">Nachhaltig</h3>
+              <TrendingUp className="mb-4" size={36} color="#14b8a6" />
+              <h3 className="text-2xl font-bold mb-2 text-white">Nachhaltig</h3>
               <p className="text-gray-300">Nicht nur Noten, sondern Lernkompetenz für die Zukunft</p>
             </div>
           </div>
