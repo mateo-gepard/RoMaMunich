@@ -37,9 +37,9 @@ export async function GET(request: NextRequest) {
       })
     } else {
       // Regular users see only their bookings (excluding cancelled)
+      // Match by userId OR email in contactInfo
       const bookingsSnapshot = await adminDb
         .collection('bookings')
-        .where('userId', '==', session.user.id)
         .get()
 
       const bookings = bookingsSnapshot.docs
@@ -47,7 +47,13 @@ export async function GET(request: NextRequest) {
           id: doc.id,
           ...doc.data()
         }))
-        .filter((booking: any) => booking.status !== 'cancelled')
+        .filter((booking: any) => {
+          // Match by userId or contactInfo email
+          const matchesUser = booking.userId === session.user.id || 
+                             booking.contactInfo?.email === session.user.email
+          const notCancelled = booking.status !== 'cancelled'
+          return matchesUser && notCancelled
+        })
 
       return NextResponse.json({ sessions: bookings })
     }
