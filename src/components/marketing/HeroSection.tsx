@@ -105,7 +105,7 @@ export default function HeroSection() {
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <Award className="text-teal-600" size={24} />
+                    <Award className="text-white" size={24} />
                   </div>
                 </div>
                 <div>

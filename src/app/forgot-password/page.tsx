@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
         <div className="max-w-md w-full">
           <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
             <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="text-teal-600" size={32} />
+              <CheckCircle className="text-white" size={32} />
             </div>
             <h1 className="text-2xl font-bold text-navy-900 mb-4">
               E-Mail gesendet!
@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
             </p>
             <Link
               href="/login"
-              className="inline-flex items-center space-x-2 text-teal-600 hover:text-teal-700 font-semibold"
+              className="inline-flex items-center space-x-2 text-white hover:text-white font-semibold"
             >
               <ArrowLeft size={20} />
               <span>Zurück zur Anmeldung</span>
@@ -104,7 +104,7 @@ export default function ForgotPasswordPage() {
           <div className="mt-6 text-center">
             <Link
               href="/login"
-              className="inline-flex items-center space-x-2 text-teal-600 hover:text-teal-700 font-semibold text-sm"
+              className="inline-flex items-center space-x-2 text-white hover:text-white font-semibold text-sm"
             >
               <ArrowLeft size={16} />
               <span>Zurück zur Anmeldung</span>

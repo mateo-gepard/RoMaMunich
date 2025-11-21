@@ -58,7 +58,7 @@ export default function AboutPage() {
           >
             ← Zurück zur Startseite
           </Link>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-purple">
             Über RoMa Munich
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl leading-relaxed">

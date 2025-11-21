@@ -181,7 +181,7 @@ export default function MatchingResultsPage() {
                 <div className="flex flex-col justify-between">
                   <div className="bg-teal-50 border-2 border-teal-500 rounded-lg p-4 mb-4">
                     <div className="text-center">
-                      <div className="text-lg font-bold text-teal-600 mb-1">
+                      <div className="text-lg font-bold text-white mb-1">
                         1. Stunde kostenlos
                       </div>
                       <div className="text-xs text-gray-600">Danach 35€/h</div>

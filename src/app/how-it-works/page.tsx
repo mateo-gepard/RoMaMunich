@@ -117,7 +117,7 @@ export default function HowItWorksPage() {
           >
             ← Zurück zur Startseite
           </Link>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-purple">
             So funktioniert's
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl leading-relaxed">
@@ -185,7 +185,7 @@ export default function HowItWorksPage() {
               return (
                 <div key={index} className="text-center">
                   <div className="w-16 h-16 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <Icon className="text-teal-600" size={32} />
+                    <Icon className="text-white" size={32} />
                   </div>
                   <h3 className="text-xl font-bold text-navy-900 mb-2">
                     {benefit.title}

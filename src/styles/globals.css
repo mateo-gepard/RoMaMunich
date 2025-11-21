@@ -86,9 +86,13 @@
 }
 
 @layer utilities {
+
   .text-gradient-teal {
-    @apply bg-gradient-to-r from-teal-500 to-teal-600 
-           bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-teal-500 to-teal-500 bg-clip-text text-transparent;
+  }
+
+  .text-purple {
+    color: #6E56CF !important;
   }
 
   .backdrop-blur-premium {

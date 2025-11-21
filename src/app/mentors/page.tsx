@@ -142,7 +142,7 @@ export default function MentorsPage() {
           >
             ← Zurück zur Startseite
           </Link>
-          <h1 className="text-5xl font-bold mb-4">Unsere Mentoren</h1>
+          <h1 className="text-5xl font-bold mb-4 text-purple">Unsere Mentoren</h1>
           <p className="text-xl text-gray-300 max-w-2xl">
             Elite-Schüler aus München mit Olympiade-Erfolgen, Frühstudium und nachgewiesenen Erfolgen.
           </p>
@@ -214,7 +214,7 @@ export default function MentorsPage() {
                     <p className="text-gray-600 text-sm">{tutor.age} Jahre</p>
                   </div>
                   <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <Award className="text-teal-600" size={24} />
+                    <Award className="text-white" size={24} />
                   </div>
                 </div>
 
@@ -231,7 +231,7 @@ export default function MentorsPage() {
                 </div>
 
                 {/* Early Study */}
-                <div className="flex items-center space-x-2 mb-4 text-teal-600">
+                <div className="flex items-center space-x-2 mb-4 text-white">
                   <GraduationCap size={18} />
                   <span className="text-sm font-medium">{tutor.earlyStudy}</span>
                 </div>
@@ -256,7 +256,7 @@ export default function MentorsPage() {
                     <div className="text-xs text-gray-500">{tutor.sessions} Sessions</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold text-teal-600">
+                    <div className="text-lg font-bold text-white">
                       Erste Stunde kostenlos
                     </div>
                     <div className="text-xs text-gray-500">Danach 35€/h</div>

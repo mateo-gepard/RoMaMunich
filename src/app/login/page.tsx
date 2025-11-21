@@ -122,7 +122,7 @@ export default function LoginPage() {
             <div className="text-right">
               <Link
                 href="/forgot-password"
-                className="text-sm text-teal-600 hover:text-teal-700 font-medium"
+                className="text-sm text-white hover:text-white font-medium"
               >
                 Passwort vergessen?
               </Link>
@@ -154,7 +154,7 @@ export default function LoginPage() {
               Noch kein Konto?{' '}
               <Link
                 href="/register"
-                className="text-teal-600 hover:text-teal-700 font-semibold"
+                className="text-white hover:text-white font-semibold"
               >
                 Jetzt registrieren
               </Link>

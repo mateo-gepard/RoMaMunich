@@ -83,7 +83,7 @@ export default function ValueProposition() {
                 className="card-premium hover:scale-105 transition-transform duration-300"
               >
                 <div className="w-14 h-14 bg-navy-100 rounded-xl flex items-center justify-center mb-6">
-                  <Icon className="text-navy-600" size={28} />
+                  <Icon className="text-white" size={28} />
                 </div>
                 <h3 className="text-2xl font-bold text-navy-900 mb-4">
                   {value.title}
@@ -98,13 +98,27 @@ export default function ValueProposition() {
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
-          <div className="inline-block bg-navy-900 text-white rounded-2xl p-8 md:p-12">
-            <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Qualität. Nähe. Struktur.
-            </h3>
-            <p className="text-xl text-gray-300 mb-6">
-              Das ist unser Versprechen an jede Familie.
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-navy-900 text-white rounded-2xl p-8 flex flex-col items-center">
+              <Shield className="mb-4" size={36} color="#fff" fill="#fff" stroke="#fff" />
+              <h3 className="text-2xl font-bold mb-2">Garantierte Qualität</h3>
+              <p className="text-gray-300">Alle Mentoren sind geprüft und nachweislich erfolgreich</p>
+            </div>
+            <div className="bg-navy-900 text-white rounded-2xl p-8 flex flex-col items-center">
+              <Award className="mb-4" size={36} color="#fff" fill="#fff" stroke="#fff" />
+              <h3 className="text-2xl font-bold mb-2">Elite-Expertise</h3>
+              <p className="text-gray-300">Olympiade-Sieger und Frühstudierende an Top-Unis</p>
+            </div>
+            <div className="bg-navy-900 text-white rounded-2xl p-8 flex flex-col items-center">
+              <Target className="mb-4" size={36} color="#fff" fill="#fff" stroke="#fff" />
+              <h3 className="text-2xl font-bold mb-2">Ergebnisorientiert</h3>
+              <p className="text-gray-300">Klare Ziele, messbare Fortschritte, transparentes Tracking</p>
+            </div>
+            <div className="bg-navy-900 text-white rounded-2xl p-8 flex flex-col items-center">
+              <TrendingUp className="mb-4" size={36} color="#fff" fill="#fff" stroke="#fff" />
+              <h3 className="text-2xl font-bold mb-2">Nachhaltig</h3>
+              <p className="text-gray-300">Nicht nur Noten, sondern Lernkompetenz für die Zukunft</p>
+            </div>
           </div>
         </div>
       </div>

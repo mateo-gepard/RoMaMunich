@@ -88,48 +88,19 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const fetchSessions = async () => {
-      // Mock data - replace with actual API call
-      setSessions([
-        {
-          id: '1',
-          date: '2025-11-22',
-          time: '16:00',
-          endTime: '17:30',
-          subject: 'Mathematik',
-          tutorName: 'Dr. Max Müller',
-          tutorId: 'tutor1',
-          duration: 1.5,
-          location: 'online',
-          status: 'confirmed',
-          notes: 'Vorbereitung für Analysis-Klausur',
-          meetingLink: 'https://meet.roma-munich.de/session-1',
-        },
-        {
-          id: '2',
-          date: '2025-11-25',
-          time: '14:00',
-          endTime: '16:00',
-          subject: 'Physik',
-          tutorName: 'Sophie Weber',
-          tutorId: 'tutor2',
-          duration: 2,
-          location: 'in-person',
-          status: 'confirmed',
-          notes: 'Mechanik und Kinematik',
-        },
-        {
-          id: '3',
-          date: '2025-11-20',
-          time: '15:00',
-          endTime: '16:30',
-          subject: 'Chemie',
-          tutorName: 'Dr. Anna Schmidt',
-          tutorId: 'tutor3',
-          duration: 1.5,
-          location: 'online',
-          status: 'completed',
-        },
-      ])
+      // Load real sessions from API
+      try {
+        const response = await fetch('/api/bookings')
+        if (response.ok) {
+          const data = await response.json()
+          setSessions(data.sessions || [])
+        } else {
+          setSessions([])
+        }
+      } catch (error) {
+        console.error('Error loading sessions:', error)
+        setSessions([])
+      }
     }
 
     if (session) {

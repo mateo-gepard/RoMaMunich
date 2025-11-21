@@ -206,7 +206,7 @@ function BookingContent() {
       <div className="container-premium max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/matching/results" className="inline-flex items-center text-teal-600 hover:text-teal-700 mb-4">
+          <Link href="/matching/results" className="inline-flex items-center text-white hover:text-white mb-4">
             <ArrowLeft size={20} className="mr-2" />
             Zurück zu den Ergebnissen
           </Link>
@@ -287,7 +287,7 @@ function BookingContent() {
                           <p className="text-sm text-gray-500">{pkg.hours} Stunde{pkg.hours > 1 ? 'n' : ''}</p>
                         </div>
                         <div className="text-right">
-                          <div className="text-2xl font-bold text-teal-600">
+                          <div className="text-2xl font-bold text-white">
                             {pkg.price === 0 ? 'Kostenlos' : `${pkg.price}€`}
                           </div>
                         </div>
@@ -468,7 +468,7 @@ function BookingContent() {
                     }`}
                   >
                     <div className="flex items-start space-x-4">
-                      <Video className="text-teal-600 mt-1" size={24} />
+                      <Video className="text-white mt-1" size={24} />
                       <div>
                         <h3 className="text-xl font-bold text-navy-900 mb-2">Online (Zoom/Teams)</h3>
                         <p className="text-gray-600">Bequem von zu Hause aus. Link wird per Email gesendet.</p>
@@ -485,7 +485,7 @@ function BookingContent() {
                     }`}
                   >
                     <div className="flex items-start space-x-4">
-                      <MapPin className="text-teal-600 mt-1" size={24} />
+                      <MapPin className="text-white mt-1" size={24} />
                       <div>
                         <h3 className="text-xl font-bold text-navy-900 mb-2">Vor Ort in München</h3>
                         <p className="text-gray-600">Treffpunkt wird nach Buchung gemeinsam vereinbart.</p>
@@ -606,7 +606,7 @@ function BookingContent() {
               
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <Package className="text-teal-600 mt-1" size={20} />
+                  <Package className="text-white mt-1" size={20} />
                   <div>
                     <div className="text-sm text-gray-600">Paket</div>
                     <div className="font-semibold text-navy-900">
@@ -617,7 +617,7 @@ function BookingContent() {
 
                 {selectedDate && selectedTime && (
                   <div className="flex items-start space-x-3">
-                    <Calendar className="text-teal-600 mt-1" size={20} />
+                    <Calendar className="text-white mt-1" size={20} />
                     <div>
                       <div className="text-sm text-gray-600">Termin</div>
                       <div className="font-semibold text-navy-900">
@@ -631,7 +631,7 @@ function BookingContent() {
                 {step >= 3 && (
                   <div className="flex items-start space-x-3">
                     {selectedLocation === 'online' ? (
-                      <Video className="text-teal-600 mt-1" size={20} />
+                      <Video className="text-white mt-1" size={20} />
                     ) : (
                       <MapPin className="text-teal-600 mt-1" size={20} />
                     )}
