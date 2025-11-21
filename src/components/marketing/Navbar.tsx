@@ -33,13 +33,23 @@ export default function Navbar() {
       <div className="container-premium">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 sm:space-x-3 -ml-2 sm:ml-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-navy-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg sm:text-xl">RM</span>
+          <Link href="/" className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center">
+              <svg viewBox="0 0 100 100" className="w-full h-full">
+                <circle cx="50" cy="50" r="48" fill="#081525"/>
+                <line x1="35" y1="65" x2="65" y2="35" stroke="#6E56CF" strokeWidth="4" strokeLinecap="round"/>
+                <circle cx="35" cy="65" r="6" fill="#6E56CF"/>
+                <circle cx="65" cy="35" r="6" fill="#6E56CF"/>
+              </svg>
             </div>
-            <span className="font-serif font-bold text-xl sm:text-2xl text-navy-900">
-              RoMa Munich
-            </span>
+            <div className="flex flex-col leading-tight">
+              <span className={`font-bold text-lg sm:text-xl ${isScrolled ? 'text-navy-900' : 'text-white'}`}>
+                <span className="text-[#6E56CF]">Ro</span>Ma
+              </span>
+              <span className={`text-[10px] sm:text-xs font-medium tracking-wider ${isScrolled ? 'text-navy-700' : 'text-gray-300'}`}>
+                ACADEMIC MENTORING
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
