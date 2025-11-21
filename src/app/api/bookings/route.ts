@@ -36,16 +36,18 @@ export async function GET(request: NextRequest) {
         allBookings: allBookings 
       })
     } else {
-      // Regular users see only their bookings
+      // Regular users see only their bookings (excluding cancelled)
       const bookingsSnapshot = await adminDb
         .collection('bookings')
         .where('userId', '==', session.user.id)
         .get()
 
-      const bookings = bookingsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
+      const bookings = bookingsSnapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        .filter(booking => booking.status !== 'cancelled')
 
       return NextResponse.json({ sessions: bookings })
     }

@@ -918,8 +918,8 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* Cancelled Sessions */}
-            {viewMode === 'list' && cancelledSessions.length > 0 && (
+            {/* Cancelled Sessions (Master Tutor Only) */}
+            {viewMode === 'list' && cancelledSessions.length > 0 && isMasterTutor && (
               <div className="bg-white rounded-xl p-6 shadow-soft">
                 <h2 className="text-xl font-bold text-navy-900 mb-4">
                   Stornierte Sessions
