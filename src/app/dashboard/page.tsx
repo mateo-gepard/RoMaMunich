@@ -265,8 +265,7 @@ export default function DashboardPage() {
         const refreshResponse = await fetch('/api/bookings')
         if (refreshResponse.ok) {
           const data = await refreshResponse.json()
-          const activeSessions = (data.sessions || []).filter((s: Session) => s.status !== 'cancelled')
-          setSessions(activeSessions)
+          setSessions(data.sessions || [])
           setAllBookings(data.allBookings || data.sessions || [])
         }
         alert('Buchung erfolgreich bestätigt!')
@@ -711,9 +710,9 @@ export default function DashboardPage() {
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <h4 className="font-semibold text-navy-900">
+                                <h3 className="font-semibold text-navy-900">
                                   {sess.subject} mit {sess.tutorName}
-                                </h4>
+                                </h3>
                                 <div className="flex items-center gap-3 mt-2 text-sm text-gray-500">
                                   <span className="flex items-center gap-1">
                                     <Clock size={14} />
@@ -774,7 +773,7 @@ export default function DashboardPage() {
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-semibold text-navy-900 text-lg">
+                            <h3 className="font-semibold text-navy-900">
                               {sess.subject} mit {sess.tutorName}
                             </h3>
                             {isMasterTutor && (
