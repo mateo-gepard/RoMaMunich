@@ -93,11 +93,11 @@ function BookingContent() {
       
       try {
         // API call to check if user has trial session
-        // For now, using mock data
         const response = await fetch('/api/bookings?userId=' + session.user.email)
         if (response.ok) {
           const bookings = await response.json()
-          const hasTrial = bookings.some((b: any) => b.packageType === 'trial')
+          // Check for package field (not packageType)
+          const hasTrial = bookings.some((b: any) => b.package === 'trial')
           setHasTrialSession(hasTrial)
           // If has trial, default to 10h package
           if (hasTrial) {
@@ -163,9 +163,28 @@ function BookingContent() {
   const handleSubmit = async () => {
     setIsLoading(true)
 
+    // Use selected tutor if available (for 2nd+ bookings), otherwise use URL tutor
+    const finalTutor = selectedTutorOption 
+      ? availableTutors.find(t => t.id === selectedTutorOption)
+      : tutor
+
+    // Validate that we have all required data
+    if (!finalTutor && !tutor) {
+      alert('Bitte wähle einen Tutor aus.')
+      setIsLoading(false)
+      return
+    }
+
+    if (!selectedDate || !selectedTime) {
+      alert('Bitte wähle ein Datum und eine Uhrzeit aus.')
+      setIsLoading(false)
+      return
+    }
+
     const bookingData = {
-      tutorId: tutor?.id,
-      tutorName: tutor?.name,
+      tutorId: finalTutor?.id || tutor?.id,
+      tutorName: finalTutor?.name || tutor?.name,
+      subject: selectedSubject || (tutor?.subjects?.[0] || 'Mathematik'),
       date: selectedDate.toISOString(),
       time: selectedTime,
       location: selectedLocation,
@@ -174,6 +193,8 @@ function BookingContent() {
       contactInfo: formData,
     }
 
+    console.log('Submitting booking data:', bookingData)
+
     try {
       const response = await fetch('/api/bookings/create', {
         method: 'POST',
@@ -181,13 +202,18 @@ function BookingContent() {
         body: JSON.stringify(bookingData),
       })
 
+      const responseData = await response.json()
+      console.log('Booking response:', responseData)
+
       if (response.ok) {
         router.push('/booking/confirmation')
       } else {
-        alert('Buchung fehlgeschlagen. Bitte versuche es erneut.')
+        console.error('Booking failed:', responseData)
+        alert(`Buchung fehlgeschlagen: ${responseData.error || 'Unbekannter Fehler'}`)
       }
     } catch (error) {
-      alert('Ein Fehler ist aufgetreten.')
+      console.error('Booking error:', error)
+      alert('Ein Fehler ist aufgetreten. Bitte versuche es erneut.')
     } finally {
       setIsLoading(false)
     }
