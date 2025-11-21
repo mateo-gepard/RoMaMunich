@@ -98,19 +98,6 @@ function BookingContent() {
     
     checkTrialSession()
   }, [session])
-          setHasTrialSession(hasTrial)
-          // If has trial, default to 10h package
-          if (hasTrial) {
-            setSelectedPackage('10h')
-          }
-        }
-      } catch (error) {
-        console.error('Error checking trial session:', error)
-      }
-    }
-    
-    checkTrialSession()
-  }, [session])
 
   // Prefill form data from session
   useEffect(() => {
