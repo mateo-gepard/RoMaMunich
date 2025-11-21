@@ -107,11 +107,10 @@ export default function DashboardPage() {
         const response = await fetch('/api/bookings')
         if (response.ok) {
           const data = await response.json()
-          // Filter out cancelled sessions for regular display
-          const activeSessions = (data.sessions || []).filter((s: Session) => s.status !== 'cancelled')
-          setSessions(activeSessions)
+          // Show all sessions including cancelled
+          setSessions(data.sessions || [])
           
-          // For master tutor, also load all bookings (including cancelled)
+          // For master tutor, also load all bookings
           if (isMasterTutor) {
             setAllBookings(data.allBookings || data.sessions || [])
           }
@@ -395,6 +394,7 @@ export default function DashboardPage() {
   }
 
   const upcomingSessions = sessions.filter(s => {
+    if (s.status === 'cancelled') return false
     if (s.status === 'pending' || s.status === 'confirmed') {
       const endTime = getSessionEndTime(s)
       return endTime > now
@@ -403,6 +403,7 @@ export default function DashboardPage() {
   }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
   const pastSessions = sessions.filter(s => {
+    if (s.status === 'cancelled') return false
     if (s.status === 'completed') return true
     if (s.status === 'confirmed') {
       const endTime = getSessionEndTime(s)
@@ -410,6 +411,9 @@ export default function DashboardPage() {
     }
     return false
   }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+  const cancelledSessions = sessions.filter(s => s.status === 'cancelled')
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -782,6 +786,15 @@ export default function DashboardPage() {
                                 <Edit3 size={16} />
                               </button>
                             )}
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                sess.status === 'confirmed'
+                                  ? 'bg-green-100 text-green-700'
+                                  : 'bg-yellow-100 text-yellow-700'
+                              }`}
+                            >
+                              {sess.status === 'confirmed' ? 'Bestätigt' : 'Ausstehend'}
+                            </span>
                           </div>
                           <div className="flex flex-wrap gap-3 text-sm text-gray-600">
                             <span className="flex items-center gap-1">
@@ -871,6 +884,11 @@ export default function DashboardPage() {
                             <h3 className="font-semibold text-navy-900">
                               {sess.subject} mit {sess.tutorName}
                             </h3>
+                            <span
+                              className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700"
+                            >
+                              Abgeschlossen
+                            </span>
                           </div>
                           <div className="flex flex-wrap gap-3 text-sm text-gray-600">
                             <span className="flex items-center gap-1">
@@ -893,6 +911,48 @@ export default function DashboardPage() {
                           >
                             Feedback geben
                           </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Cancelled Sessions */}
+            {viewMode === 'list' && cancelledSessions.length > 0 && (
+              <div className="bg-white rounded-xl p-6 shadow-soft">
+                <h2 className="text-xl font-bold text-navy-900 mb-4">
+                  Stornierte Sessions
+                </h2>
+                <div className="space-y-3">
+                  {cancelledSessions.slice(0, 5).map((sess) => (
+                    <div
+                      key={sess.id}
+                      className="border border-gray-200 rounded-lg p-4 opacity-75"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="font-semibold text-gray-700">
+                              {sess.subject} mit {sess.tutorName}
+                            </h3>
+                            <span
+                              className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
+                            >
+                              Storniert
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                            <span className="flex items-center gap-1">
+                              <CalendarIcon size={16} />
+                              {new Date(sess.date).toLocaleDateString('de-DE')}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock size={16} />
+                              {sess.time} ({sess.duration}h)
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
