@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Calendar, Clock, Video, MapPin, Package, Check, ArrowLeft, User, Mail, Phone } from 'lucide-react'
 
@@ -20,6 +21,7 @@ interface TimeSlot {
 function BookingContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
+  const { data: session } = useSession()
   const tutorId = searchParams.get('tutor')
 
   const [tutor, setTutor] = useState<Tutor | null>(null)
@@ -27,8 +29,11 @@ function BookingContent() {
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [selectedLocation, setSelectedLocation] = useState<'online' | 'in-person'>('online')
   const [selectedPackage, setSelectedPackage] = useState<'trial' | '10h' | '20h'>('trial')
+  const [selectedSubject, setSelectedSubject] = useState<string>('')
+  const [selectedTutorOption, setSelectedTutorOption] = useState<number | null>(null)
   const [step, setStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
+  const [hasTrialSession, setHasTrialSession] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -60,6 +65,16 @@ function BookingContent() {
     },
   ]
 
+  const subjects = ['Mathematik', 'Physik', 'Chemie', 'Informatik', 'Biologie', 'Englisch', 'Deutsch']
+
+  const availableTutors = [
+    { id: 1, name: 'Max Müller', subjects: ['Mathematik', 'Physik'], experience: '3 Jahre', rating: 4.9 },
+    { id: 2, name: 'Sophie Weber', subjects: ['Informatik', 'Mathematik'], experience: '2 Jahre', rating: 4.8 },
+    { id: 3, name: 'Leon Schmidt', subjects: ['Mathematik', 'Chemie'], experience: '4 Jahre', rating: 5.0 },
+    { id: 4, name: 'Anna Bauer', subjects: ['Englisch', 'Deutsch'], experience: '3 Jahre', rating: 4.9 },
+    { id: 5, name: 'Tim Wagner', subjects: ['Biologie', 'Chemie'], experience: '2 Jahre', rating: 4.7 },
+  ]
+
   // Mock tutor data
   useEffect(() => {
     const mockTutors = [
@@ -70,6 +85,43 @@ function BookingContent() {
     const foundTutor = mockTutors.find(t => t.id === Number(tutorId))
     setTutor(foundTutor || mockTutors[0])
   }, [tutorId])
+
+  // Check if user has already booked a trial session
+  useEffect(() => {
+    const checkTrialSession = async () => {
+      if (!session?.user?.email) return
+      
+      try {
+        // API call to check if user has trial session
+        // For now, using mock data
+        const response = await fetch('/api/bookings?userId=' + session.user.email)
+        if (response.ok) {
+          const bookings = await response.json()
+          const hasTrial = bookings.some((b: any) => b.packageType === 'trial')
+          setHasTrialSession(hasTrial)
+          // If has trial, default to 10h package
+          if (hasTrial) {
+            setSelectedPackage('10h')
+          }
+        }
+      } catch (error) {
+        console.error('Error checking trial session:', error)
+      }
+    }
+    
+    checkTrialSession()
+  }, [session])
+
+  // Prefill form data from session
+  useEffect(() => {
+    if (session?.user) {
+      setFormData(prev => ({
+        ...prev,
+        name: session.user?.name || prev.name,
+        email: session.user?.email || prev.email,
+      }))
+    }
+  }, [session])
 
   // Generate time slots
   const generateTimeSlots = (): TimeSlot[] => {
@@ -208,8 +260,17 @@ function BookingContent() {
             {step === 1 && (
               <div className="bg-white rounded-xl shadow-soft p-8">
                 <h2 className="text-2xl font-bold text-navy-900 mb-6">Paket wählen</h2>
+                {hasTrialSession && (
+                  <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      Sie haben bereits eine Probestunde gebucht. Wählen Sie ein anderes Paket für weitere Sessions.
+                    </p>
+                  </div>
+                )}
                 <div className="space-y-4">
-                  {packages.map((pkg) => (
+                  {packages
+                    .filter(pkg => !hasTrialSession || pkg.id !== 'trial')
+                    .map((pkg) => (
                     <button
                       key={pkg.id}
                       onClick={() => setSelectedPackage(pkg.id as any)}
@@ -235,11 +296,89 @@ function BookingContent() {
                   ))}
                 </div>
                 <button
-                  onClick={() => setStep(2)}
+                  onClick={() => hasTrialSession ? setStep(1.5) : setStep(2)}
                   className="w-full mt-6 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors"
                 >
-                  Weiter zu Datum & Zeit
+                  {hasTrialSession ? 'Weiter zu Tutor & Fach' : 'Weiter zu Datum & Zeit'}
                 </button>
+              </div>
+            )}
+
+            {/* Step 1.5: Tutor & Subject Selection (Only for 2nd+ booking) */}
+            {step === 1.5 && (
+              <div className="bg-white rounded-xl shadow-soft p-8">
+                <h2 className="text-2xl font-bold text-navy-900 mb-6">Tutor & Fach wählen</h2>
+                
+                {/* Subject Selection */}
+                <div className="mb-6">
+                  <h3 className="font-semibold text-navy-900 mb-3">Fach wählen</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {subjects.map((subject) => (
+                      <button
+                        key={subject}
+                        onClick={() => setSelectedSubject(subject)}
+                        className={`p-3 rounded-lg border-2 transition-all ${
+                          selectedSubject === subject
+                            ? 'border-teal-500 bg-teal-50 text-teal-900'
+                            : 'border-gray-300 hover:border-gray-400 text-gray-700'
+                        }`}
+                      >
+                        {subject}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tutor Selection */}
+                {selectedSubject && (
+                  <div className="mb-6">
+                    <h3 className="font-semibold text-navy-900 mb-3">Tutor wählen</h3>
+                    <div className="space-y-3">
+                      {availableTutors
+                        .filter(t => t.subjects.includes(selectedSubject))
+                        .map((tutor) => (
+                        <button
+                          key={tutor.id}
+                          onClick={() => setSelectedTutorOption(tutor.id)}
+                          className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+                            selectedTutorOption === tutor.id
+                              ? 'border-teal-500 bg-teal-50'
+                              : 'border-gray-300 hover:border-gray-400'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-bold text-navy-900">{tutor.name}</h4>
+                              <p className="text-sm text-gray-600">{tutor.subjects.join(', ')}</p>
+                              <p className="text-xs text-gray-500 mt-1">{tutor.experience} Erfahrung • ⭐ {tutor.rating}</p>
+                            </div>
+                            <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center">
+                              <span className="text-white text-xl font-bold">
+                                {tutor.name.split(' ').map(n => n[0]).join('')}
+                              </span>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex space-x-4 mt-6">
+                  <button
+                    onClick={() => setStep(1)}
+                    className="flex-1 bg-gray-200 text-navy-900 font-bold py-4 rounded-lg hover:bg-gray-300 transition-colors"
+                  >
+                    Zurück
+                  </button>
+                  <button
+                    onClick={() => setStep(2)}
+                    disabled={!selectedSubject || !selectedTutorOption}
+                    className="flex-1 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Weiter zu Datum & Zeit
+                  </button>
+                </div>
               </div>
             )}
 

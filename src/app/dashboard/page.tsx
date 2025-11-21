@@ -4,43 +4,56 @@ import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
-  Calendar,
-  BookOpen,
-  TrendingUp,
-  Clock,
-  Award,
+  Calendar as CalendarIcon,
+  MessageCircle,
   Settings,
   LogOut,
   User,
+  Clock,
+  Video,
+  MapPin,
+  X,
+  Send,
+  Star,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 import Link from 'next/link'
+import Calendar from 'react-calendar'
+import 'react-calendar/dist/Calendar.css'
 
-interface DashboardStats {
-  totalSessions: number
-  upcomingSessions: number
-  completedTopics: number
-  currentStreak: number
-}
-
-interface UpcomingSession {
+interface Session {
   id: string
   date: string
   time: string
+  endTime: string
   subject: string
   tutorName: string
+  tutorId: string
   duration: number
+  location: 'online' | 'in-person'
+  status: 'confirmed' | 'pending' | 'completed' | 'cancelled'
+  notes?: string
+  meetingLink?: string
 }
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [stats, setStats] = useState<DashboardStats>({
-    totalSessions: 0,
-    upcomingSessions: 0,
-    completedTopics: 0,
-    currentStreak: 0,
-  })
-  const [upcomingSessions, setUpcomingSessions] = useState<UpcomingSession[]>([])
+  const [sessions, setSessions] = useState<Session[]>([])
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null)
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const [showMessageModal, setShowMessageModal] = useState(false)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
+  const [messageText, setMessageText] = useState('')
+  const [feedbackRating, setFeedbackRating] = useState(5)
+  const [feedbackText, setFeedbackText] = useState('')
+  const [cancellationReason, setCancellationReason] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list')
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const [unreadMessages, setUnreadMessages] = useState(0)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -48,41 +61,174 @@ export default function DashboardPage() {
     }
   }, [status, router])
 
+  // Load unread message count
   useEffect(() => {
-    // Fetch dashboard data
-    const fetchDashboardData = async () => {
-      // Mock data - replace with actual API calls
-      setStats({
-        totalSessions: 12,
-        upcomingSessions: 3,
-        completedTopics: 8,
-        currentStreak: 4,
-      })
+    const loadUnreadCount = async () => {
+      if (!session?.user) return
+      try {
+        const response = await fetch('/api/messages')
+        const data = await response.json()
+        const totalUnread = data.conversations?.reduce(
+          (sum: number, conv: any) => sum + (conv.unreadCount || 0),
+          0
+        ) || 0
+        setUnreadMessages(totalUnread)
+      } catch (error) {
+        console.error('Error loading unread count:', error)
+      }
+    }
+    
+    if (session) {
+      loadUnreadCount()
+      // Poll for updates every 10 seconds
+      const interval = setInterval(loadUnreadCount, 10000)
+      return () => clearInterval(interval)
+    }
+  }, [session])
 
-      setUpcomingSessions([
+  useEffect(() => {
+    const fetchSessions = async () => {
+      // Mock data - replace with actual API call
+      setSessions([
         {
           id: '1',
-          date: '2024-01-15',
+          date: '2025-11-22',
           time: '16:00',
+          endTime: '17:30',
           subject: 'Mathematik',
-          tutorName: 'Max Müller',
+          tutorName: 'Dr. Max Müller',
+          tutorId: 'tutor1',
           duration: 1.5,
+          location: 'online',
+          status: 'confirmed',
+          notes: 'Vorbereitung für Analysis-Klausur',
+          meetingLink: 'https://meet.roma-munich.de/session-1',
         },
         {
           id: '2',
-          date: '2024-01-17',
+          date: '2025-11-25',
           time: '14:00',
+          endTime: '16:00',
           subject: 'Physik',
           tutorName: 'Sophie Weber',
+          tutorId: 'tutor2',
           duration: 2,
+          location: 'in-person',
+          status: 'confirmed',
+          notes: 'Mechanik und Kinematik',
+        },
+        {
+          id: '3',
+          date: '2025-11-20',
+          time: '15:00',
+          endTime: '16:30',
+          subject: 'Chemie',
+          tutorName: 'Dr. Anna Schmidt',
+          tutorId: 'tutor3',
+          duration: 1.5,
+          location: 'online',
+          status: 'completed',
         },
       ])
     }
 
     if (session) {
-      fetchDashboardData()
+      fetchSessions()
     }
   }, [session])
+
+  const handleCancelSession = async (sessionId: string) => {
+    if (!cancellationReason.trim()) {
+      alert('Bitte geben Sie einen Grund für die Stornierung an.')
+      return
+    }
+
+    setLoading(true)
+    try {
+      // API call to cancel session with reason
+      const response = await fetch('/api/bookings/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          sessionId, 
+          reason: cancellationReason,
+          session: selectedSession 
+        }),
+      })
+
+      if (response.ok) {
+        setSessions(sessions.map(s => 
+          s.id === sessionId ? { ...s, status: 'cancelled' as const } : s
+        ))
+        setShowCancelModal(false)
+        setSelectedSession(null)
+        setCancellationReason('')
+        alert('Session erfolgreich storniert. Der Tutor wurde benachrichtigt.')
+      } else {
+        alert('Fehler beim Stornieren der Session.')
+      }
+    } catch (error) {
+      console.error('Error cancelling session:', error)
+      alert('Ein Fehler ist aufgetreten.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSendMessage = async () => {
+    if (!messageText.trim() || !selectedSession) return
+    
+    setLoading(true)
+    try {
+      // API call to send message with reply-to system
+      const response = await fetch('/api/messages/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tutorId: selectedSession.tutorId,
+          tutorName: selectedSession.tutorName,
+          subject: selectedSession.subject,
+          message: messageText,
+          sessionId: selectedSession.id,
+        }),
+      })
+
+      if (response.ok) {
+        setMessageText('')
+        setShowMessageModal(false)
+        setSelectedSession(null)
+        alert('Nachricht erfolgreich gesendet!')
+      } else {
+        const error = await response.json()
+        console.error('Error response:', error)
+        alert('Fehler beim Senden der Nachricht.')
+      }
+    } catch (error) {
+      console.error('Error sending message:', error)
+      alert('Ein Fehler ist aufgetreten.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSubmitFeedback = async () => {
+    if (!selectedSession) return
+    
+    setLoading(true)
+    try {
+      // API call to submit feedback
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      setFeedbackRating(5)
+      setFeedbackText('')
+      setShowFeedbackModal(false)
+      setSelectedSession(null)
+      alert('Feedback erfolgreich gesendet!')
+    } catch (error) {
+      console.error('Error submitting feedback:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   if (status === 'loading') {
     return (
@@ -99,10 +245,34 @@ export default function DashboardPage() {
     return null
   }
 
+  const now = new Date()
+  
+  const getSessionEndTime = (sess: Session) => {
+    const [hours, minutes] = sess.endTime.split(':').map(Number)
+    const endDateTime = new Date(sess.date)
+    endDateTime.setHours(hours, minutes, 0, 0)
+    return endDateTime
+  }
+
+  const upcomingSessions = sessions.filter(s => {
+    if (s.status !== 'confirmed') return false
+    const endTime = getSessionEndTime(s)
+    return endTime > now
+  }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
+  const pastSessions = sessions.filter(s => {
+    if (s.status === 'completed' || s.status === 'cancelled') return true
+    if (s.status === 'confirmed') {
+      const endTime = getSessionEndTime(s)
+      return endTime <= now
+    }
+    return false
+  }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="container-premium py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-3">
@@ -115,14 +285,15 @@ export default function DashboardPage() {
             </Link>
 
             <div className="flex items-center space-x-4">
-              <span className="text-gray-600">
-                Hallo, {session.user?.name}
+              <span className="text-gray-600 hidden sm:block">
+                {session.user?.name}
               </span>
               <button
                 onClick={() => signOut()}
-                className="flex items-center space-x-2 text-gray-600 hover:text-navy-900"
+                className="flex items-center space-x-2 text-gray-600 hover:text-navy-900 transition-colors"
               >
                 <LogOut size={20} />
+                <span className="hidden sm:inline">Abmelden</span>
               </button>
             </div>
           </div>
@@ -135,35 +306,33 @@ export default function DashboardPage() {
           <aside className="space-y-2">
             <Link
               href="/dashboard"
-              className="flex items-center space-x-3 px-4 py-3 bg-navy-600 text-white rounded-lg font-medium"
+              className="flex items-center space-x-3 px-4 py-3 bg-navy-600 text-white rounded-lg font-medium transition-colors"
             >
-              <User size={20} />
-              <span>Übersicht</span>
-            </Link>
-            <Link
-              href="/dashboard/sessions"
-              className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium"
-            >
-              <Calendar size={20} />
+              <CalendarIcon size={20} />
               <span>Meine Sessions</span>
             </Link>
             <Link
-              href="/dashboard/learning-plan"
-              className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium"
+              href="/booking"
+              className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
             >
-              <BookOpen size={20} />
-              <span>Lernplan</span>
+              <Plus size={20} />
+              <span>Session buchen</span>
             </Link>
             <Link
-              href="/dashboard/progress"
-              className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium"
+              href="/dashboard/messages"
+              className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
             >
-              <TrendingUp size={20} />
-              <span>Fortschritt</span>
+              <MessageCircle size={20} />
+              <span>Nachrichten</span>
+              {unreadMessages > 0 && (
+                <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  {unreadMessages}
+                </span>
+              )}
             </Link>
             <Link
               href="/dashboard/settings"
-              className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium"
+              className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
             >
               <Settings size={20} />
               <span>Einstellungen</span>
@@ -171,106 +340,550 @@ export default function DashboardPage() {
           </aside>
 
           {/* Main Content */}
-          <main className="space-y-8">
-            {/* Welcome Banner */}
-            <div className="bg-gradient-to-r from-navy-900 to-navy-700 text-white rounded-2xl p-8">
-              <h1 className="text-3xl font-bold mb-2">
-                Willkommen zurück, {session.user?.name}!
-              </h1>
-              <p className="text-gray-300">
-                Bereit für deine nächste Session? Dein Fortschritt sieht
-                großartig aus! 🚀
-              </p>
-            </div>
-
-            {/* Stats Grid */}
-            <div className="grid md:grid-cols-4 gap-6">
-              <div className="bg-white rounded-xl p-6 shadow-soft">
-                <div className="flex items-center justify-between mb-3">
-                  <Calendar className="text-navy-600" size={24} />
-                </div>
-                <div className="text-3xl font-bold text-navy-900 mb-1">
-                  {stats.totalSessions}
-                </div>
-                <div className="text-sm text-gray-600">Gesamt Sessions</div>
+          <main className="space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-navy-900 mb-1">
+                  Willkommen zurück!
+                </h1>
+                <p className="text-gray-600">
+                  Verwalten Sie Ihre Mentoring-Sessions
+                </p>
               </div>
-
-              <div className="bg-white rounded-xl p-6 shadow-soft">
-                <div className="flex items-center justify-between mb-3">
-                  <Clock className="text-gold-500" size={24} />
-                </div>
-                <div className="text-3xl font-bold text-navy-900 mb-1">
-                  {stats.upcomingSessions}
-                </div>
-                <div className="text-sm text-gray-600">Anstehend</div>
-              </div>
-
-              <div className="bg-white rounded-xl p-6 shadow-soft">
-                <div className="flex items-center justify-between mb-3">
-                  <BookOpen className="text-green-500" size={24} />
-                </div>
-                <div className="text-3xl font-bold text-navy-900 mb-1">
-                  {stats.completedTopics}
-                </div>
-                <div className="text-sm text-gray-600">Abgeschlossene Themen</div>
-              </div>
-
-              <div className="bg-white rounded-xl p-6 shadow-soft">
-                <div className="flex items-center justify-between mb-3">
-                  <Award className="text-orange-500" size={24} />
-                </div>
-                <div className="text-3xl font-bold text-navy-900 mb-1">
-                  {stats.currentStreak} 🔥
-                </div>
-                <div className="text-sm text-gray-600">Tage Streak</div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    viewMode === 'list'
+                      ? 'bg-navy-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Liste
+                </button>
+                <button
+                  onClick={() => setViewMode('calendar')}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    viewMode === 'calendar'
+                      ? 'bg-navy-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Kalender
+                </button>
               </div>
             </div>
 
-            {/* Upcoming Sessions */}
-            <div className="bg-white rounded-xl p-6 shadow-soft">
-              <h2 className="text-2xl font-bold text-navy-900 mb-6">
-                Nächste Sessions
-              </h2>
-              <div className="space-y-4">
-                {upcomingSessions.map((session) => (
-                  <div
-                    key={session.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-navy-100 rounded-lg flex items-center justify-center">
-                        <Calendar className="text-navy-600" size={24} />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-navy-900">
-                          {session.subject}
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          mit {session.tutorName}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold text-navy-900">
-                        {new Date(session.date).toLocaleDateString('de-DE')}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {session.time} • {session.duration}h
-                      </div>
+            {/* Quick Stats */}
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="bg-white rounded-xl p-6 shadow-soft">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Anstehend</p>
+                    <p className="text-3xl font-bold text-navy-900">
+                      {upcomingSessions.length}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Clock className="text-blue-600" size={24} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-soft">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Abgeschlossen</p>
+                    <p className="text-3xl font-bold text-navy-900">
+                      {pastSessions.length}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <CalendarIcon className="text-green-600" size={24} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-soft">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Gesamt Stunden</p>
+                    <p className="text-3xl font-bold text-navy-900">
+                      {sessions.reduce((acc, s) => acc + s.duration, 0)}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <User className="text-purple-600" size={24} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Calendar View */}
+            {viewMode === 'calendar' && (
+              <div className="bg-white rounded-xl p-6 shadow-soft">
+                <h2 className="text-xl font-bold text-navy-900 mb-4">
+                  Kalender Ansicht
+                </h2>
+                <div className="calendar-container">
+                  <Calendar
+                    onChange={(value) => setSelectedDate(value as Date)}
+                    value={selectedDate}
+                    tileContent={({ date, view }) => {
+                      if (view === 'month') {
+                        const sessionsOnDate = sessions.filter(
+                          (s) => new Date(s.date).toDateString() === date.toDateString()
+                        )
+                        if (sessionsOnDate.length > 0) {
+                          return (
+                            <div className="flex justify-center mt-1">
+                              <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
+                            </div>
+                          )
+                        }
+                      }
+                      return null
+                    }}
+                    className="w-full border-none"
+                  />
+                </div>
+                
+                {/* Sessions on selected date */}
+                {sessions.filter(
+                  (s) => new Date(s.date).toDateString() === selectedDate.toDateString()
+                ).length > 0 && (
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <h3 className="font-semibold text-navy-900 mb-3">
+                      Sessions am {selectedDate.toLocaleDateString('de-DE', {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                      })}
+                    </h3>
+                    <div className="space-y-3">
+                      {sessions
+                        .filter(
+                          (s) => new Date(s.date).toDateString() === selectedDate.toDateString()
+                        )
+                        .map((sess) => (
+                          <div
+                            key={sess.id}
+                            className="border border-gray-200 rounded-lg p-4"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-semibold text-navy-900">
+                                  {sess.subject}
+                                </h4>
+                                <p className="text-sm text-gray-600">
+                                  mit {sess.tutorName}
+                                </p>
+                                <div className="flex items-center gap-3 mt-2 text-sm text-gray-500">
+                                  <span className="flex items-center gap-1">
+                                    <Clock size={14} />
+                                    {sess.time} - {sess.endTime}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    {sess.location === 'online' ? (
+                                      <>
+                                        <Video size={14} />
+                                        Online
+                                      </>
+                                    ) : (
+                                      <>
+                                        <MapPin size={14} />
+                                        Vor Ort
+                                      </>
+                                    )}
+                                  </span>
+                                </div>
+                              </div>
+                              <span
+                                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                  sess.status === 'confirmed'
+                                    ? 'bg-green-100 text-green-700'
+                                    : sess.status === 'pending'
+                                    ? 'bg-yellow-100 text-yellow-700'
+                                    : sess.status === 'completed'
+                                    ? 'bg-blue-100 text-blue-700'
+                                    : 'bg-red-100 text-red-700'
+                                }`}
+                              >
+                                {sess.status === 'confirmed' && 'Bestätigt'}
+                                {sess.status === 'pending' && 'Ausstehend'}
+                                {sess.status === 'completed' && 'Abgeschlossen'}
+                                {sess.status === 'cancelled' && 'Storniert'}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
                     </div>
                   </div>
-                ))}
+                )}
               </div>
-              <Link
-                href="/dashboard/sessions"
-                className="block mt-6 text-center text-navy-600 font-semibold hover:text-navy-800"
-              >
-                Alle Sessions ansehen →
-              </Link>
-            </div>
+            )}
+
+            {/* List View - Upcoming Sessions */}
+            {viewMode === 'list' && upcomingSessions.length > 0 && (
+              <div className="bg-white rounded-xl p-6 shadow-soft">
+                <h2 className="text-xl font-bold text-navy-900 mb-4">
+                  Nächste Sessions
+                </h2>
+                <div className="space-y-3">
+                  {upcomingSessions.map((sess) => (
+                    <div
+                      key={sess.id}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="font-semibold text-navy-900 text-lg">
+                              {sess.subject}
+                            </h3>
+                            <span className="text-sm text-gray-500">
+                              mit {sess.tutorName}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                            <span className="flex items-center gap-1">
+                              <CalendarIcon size={16} />
+                              {new Date(sess.date).toLocaleDateString('de-DE', {
+                                weekday: 'long',
+                                day: 'numeric',
+                                month: 'long',
+                              })}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock size={16} />
+                              {sess.time} - {sess.endTime} ({sess.duration}h)
+                            </span>
+                            <span className="flex items-center gap-1">
+                              {sess.location === 'online' ? (
+                                <>
+                                  <Video size={16} />
+                                  Online
+                                </>
+                              ) : (
+                                <>
+                                  <MapPin size={16} />
+                                  Vor Ort
+                                </>
+                              )}
+                            </span>
+                          </div>
+                          {sess.notes && (
+                            <p className="text-sm text-gray-500 mt-2">
+                              {sess.notes}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap sm:flex-col gap-2">
+                          {sess.location === 'online' && sess.meetingLink && (
+                            <a
+                              href={sess.meetingLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-center text-sm font-medium"
+                            >
+                              Meeting beitreten
+                            </a>
+                          )}
+                          <button
+                            onClick={() => {
+                              setSelectedSession(sess)
+                              setShowMessageModal(true)
+                            }}
+                            className="px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors text-sm font-medium"
+                          >
+                            Nachricht senden
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedSession(sess)
+                              setShowCancelModal(true)
+                            }}
+                            className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
+                          >
+                            Stornieren
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Past Sessions */}
+            {viewMode === 'list' && pastSessions.length > 0 && (
+              <div className="bg-white rounded-xl p-6 shadow-soft">
+                <h2 className="text-xl font-bold text-navy-900 mb-4">
+                  Vergangene Sessions
+                </h2>
+                <div className="space-y-3">
+                  {pastSessions.slice(0, 5).map((sess) => (
+                    <div
+                      key={sess.id}
+                      className="border border-gray-200 rounded-lg p-4"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="font-semibold text-navy-900">
+                              {sess.subject}
+                            </h3>
+                            <span className="text-sm text-gray-500">
+                              mit {sess.tutorName}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                            <span className="flex items-center gap-1">
+                              <CalendarIcon size={16} />
+                              {new Date(sess.date).toLocaleDateString('de-DE')}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock size={16} />
+                              {sess.time} ({sess.duration}h)
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => {
+                              setSelectedSession(sess)
+                              setShowFeedbackModal(true)
+                            }}
+                            className="px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors text-sm font-medium"
+                          >
+                            Feedback geben
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {viewMode === 'list' && upcomingSessions.length === 0 && pastSessions.length === 0 && (
+              <div className="bg-white rounded-xl p-12 text-center shadow-soft">
+                <CalendarIcon className="mx-auto text-gray-400 mb-4" size={48} />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Noch keine Sessions gebucht
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Buchen Sie Ihre erste Session und starten Sie Ihre Lernreise!
+                </p>
+                <Link
+                  href="/booking"
+                  className="inline-block px-6 py-3 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors font-medium"
+                >
+                  Session buchen
+                </Link>
+              </div>
+            )}
           </main>
         </div>
       </div>
+
+      {/* Cancel Modal */}
+      {showCancelModal && selectedSession && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-navy-900">
+                Session stornieren
+              </h3>
+              <button
+                onClick={() => {
+                  setShowCancelModal(false)
+                  setSelectedSession(null)
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <p className="text-gray-600 mb-4">
+              Möchten Sie die Session am{' '}
+              {new Date(selectedSession.date).toLocaleDateString('de-DE')} um{' '}
+              {selectedSession.time} wirklich stornieren?
+            </p>
+            <p className="text-sm text-gray-500 mb-4">
+              Stornierungen sind bis 24 Stunden vor der Session kostenlos.
+            </p>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Grund für die Stornierung *
+              </label>
+              <textarea
+                value={cancellationReason}
+                onChange={(e) => setCancellationReason(e.target.value)}
+                rows={3}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-600 focus:border-transparent"
+                placeholder="Bitte teilen Sie uns den Grund mit..."
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowCancelModal(false)
+                  setSelectedSession(null)
+                  setCancellationReason('')
+                }}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={() => handleCancelSession(selectedSession.id)}
+                disabled={loading || !cancellationReason.trim()}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50"
+              >
+                {loading ? 'Wird storniert...' : 'Stornieren'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Message Modal */}
+      {showMessageModal && selectedSession && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-navy-900">
+                Nachricht an {selectedSession.tutorName}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowMessageModal(false)
+                  setSelectedSession(null)
+                  setMessageText('')
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Ihre Nachricht
+              </label>
+              <textarea
+                value={messageText}
+                onChange={(e) => setMessageText(e.target.value)}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-600 focus:border-transparent"
+                placeholder="Schreiben Sie Ihre Nachricht..."
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowMessageModal(false)
+                  setSelectedSession(null)
+                  setMessageText('')
+                }}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={handleSendMessage}
+                disabled={loading || !messageText.trim()}
+                className="flex-1 px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                <Send size={18} />
+                {loading ? 'Wird gesendet...' : 'Senden'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Feedback Modal */}
+      {showFeedbackModal && selectedSession && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-navy-900">
+                Feedback für {selectedSession.tutorName}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowFeedbackModal(false)
+                  setSelectedSession(null)
+                  setFeedbackRating(5)
+                  setFeedbackText('')
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Bewertung
+              </label>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <button
+                    key={rating}
+                    onClick={() => setFeedbackRating(rating)}
+                    className="transition-transform hover:scale-110"
+                  >
+                    <Star
+                      size={32}
+                      className={
+                        rating <= feedbackRating
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : 'text-gray-300'
+                      }
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Kommentar (optional)
+              </label>
+              <textarea
+                value={feedbackText}
+                onChange={(e) => setFeedbackText(e.target.value)}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-600 focus:border-transparent"
+                placeholder="Teilen Sie Ihre Erfahrung..."
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowFeedbackModal(false)
+                  setSelectedSession(null)
+                  setFeedbackRating(5)
+                  setFeedbackText('')
+                }}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={handleSubmitFeedback}
+                disabled={loading}
+                className="flex-1 px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors font-medium disabled:opacity-50"
+              >
+                {loading ? 'Wird gesendet...' : 'Feedback senden'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

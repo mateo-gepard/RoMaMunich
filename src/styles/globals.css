@@ -130,6 +130,45 @@
   animation: fadeInUp 0.6s ease-out;
 }
 
+/* React Calendar Styling */
+.calendar-container .react-calendar {
+  border: none !important;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+}
+
+.calendar-container .react-calendar__tile {
+  @apply p-3 rounded-lg transition-colors;
+}
+
+.calendar-container .react-calendar__tile:hover {
+  @apply bg-teal-50;
+}
+
+.calendar-container .react-calendar__tile--active {
+  @apply bg-navy-600 text-white;
+}
+
+.calendar-container .react-calendar__tile--active:hover {
+  @apply bg-navy-700;
+}
+
+.calendar-container .react-calendar__tile--now {
+  @apply bg-teal-100;
+}
+
+.calendar-container .react-calendar__navigation button {
+  @apply text-navy-900 font-semibold text-lg;
+}
+
+.calendar-container .react-calendar__navigation button:hover {
+  @apply bg-gray-100 rounded-lg;
+}
+
+.calendar-container .react-calendar__month-view__weekdays {
+  @apply text-gray-600 font-medium text-sm;
+}
+
   /* Selection color */
   ::selection {
     @apply bg-teal-200 text-navy-900;

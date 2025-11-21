@@ -1,6 +1,6 @@
 'use client'
 
-import { Award, Star, Calendar, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { Award, Star, Calendar, ArrowRight, CheckCircle2, Trophy } from 'lucide-react'
 import Link from 'next/link'
 
 export default function MatchingResultsPage() {
@@ -205,8 +205,8 @@ export default function MatchingResultsPage() {
 
                   {index === 0 && (
                     <div className="mt-4 text-center">
-                      <span className="inline-block px-3 py-1 bg-gold-100 text-gold-800 text-xs font-semibold rounded-full">
-                        🏆 Top Match
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gold-100 text-gold-800 text-xs font-semibold rounded-full">
+                        <Trophy size={14} /> Top Match
                       </span>
                     </div>
                   )}

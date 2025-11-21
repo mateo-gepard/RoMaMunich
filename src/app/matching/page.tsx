@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronRight, ChevronLeft, Sparkles } from 'lucide-react'
+import { ChevronRight, ChevronLeft, Sparkles, Calculator, Atom, Beaker, Monitor, Dna, BookOpen, Globe, Library } from 'lucide-react'
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6
 
@@ -23,14 +23,14 @@ export default function MatchingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const subjects = [
-    { id: 'math', label: 'Mathematik', icon: '📐' },
-    { id: 'physics', label: 'Physik', icon: '⚛️' },
-    { id: 'chemistry', label: 'Chemie', icon: '🧪' },
-    { id: 'cs', label: 'Informatik', icon: '💻' },
-    { id: 'biology', label: 'Biologie', icon: '🧬' },
-    { id: 'german', label: 'Deutsch', icon: '📖' },
-    { id: 'english', label: 'Englisch', icon: '🇬🇧' },
-    { id: 'other', label: 'Anderes Fach', icon: '📚' },
+    { id: 'math', label: 'Mathematik', icon: Calculator },
+    { id: 'physics', label: 'Physik', icon: Atom },
+    { id: 'chemistry', label: 'Chemie', icon: Beaker },
+    { id: 'cs', label: 'Informatik', icon: Monitor },
+    { id: 'biology', label: 'Biologie', icon: Dna },
+    { id: 'german', label: 'Deutsch', icon: BookOpen },
+    { id: 'english', label: 'Englisch', icon: Globe },
+    { id: 'other', label: 'Anderes Fach', icon: Library },
   ]
 
   const levels = [
@@ -108,21 +108,26 @@ export default function MatchingPage() {
               </p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {subjects.map((subject) => (
-                <button
-                  key={subject.id}
-                  onClick={() => {
-                    setFormData({ ...formData, subject: subject.id })
-                    handleNext()
-                  }}
-                  className="p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-navy-600 hover:shadow-lg transition-all duration-200 text-center group"
-                >
-                  <div className="text-4xl mb-3">{subject.icon}</div>
-                  <div className="font-semibold text-navy-900 group-hover:text-navy-600">
-                    {subject.label}
-                  </div>
-                </button>
-              ))}
+              {subjects.map((subject) => {
+                const IconComponent = subject.icon
+                return (
+                  <button
+                    key={subject.id}
+                    onClick={() => {
+                      setFormData({ ...formData, subject: subject.id })
+                      handleNext()
+                    }}
+                    className="p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-navy-600 hover:shadow-lg transition-all duration-200 text-center group"
+                  >
+                    <div className="mb-3 flex justify-center">
+                      <IconComponent size={40} className="text-navy-600 group-hover:text-navy-700" />
+                    </div>
+                    <div className="font-semibold text-navy-900 group-hover:text-navy-600">
+                      {subject.label}
+                    </div>
+                  </button>
+                )
+              })}
             </div>
           </div>
         )

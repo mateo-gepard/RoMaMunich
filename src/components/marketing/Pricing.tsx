@@ -161,7 +161,12 @@ export default function Pricing() {
                 {/* Features */}
                 <ul className="space-y-3">
                   {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-start space-x-3">
+                    <li
+                      key={i}
+                      className={`flex items-start space-x-3 ${
+                        pkg.popular ? 'bg-navy-800/80 rounded-lg px-2 py-1' : ''
+                      }`}
+                    >
                       <Check
                         className={`flex-shrink-0 mt-1 ${
                           pkg.popular ? 'text-teal-400' : 'text-navy-600'
@@ -170,7 +175,7 @@ export default function Pricing() {
                       />
                       <span
                         className={
-                          pkg.popular ? 'text-gray-200' : 'text-gray-700'
+                          pkg.popular ? 'text-white' : 'text-gray-700'
                         }
                       >
                         {feature}

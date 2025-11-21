@@ -60,14 +60,14 @@ export async function POST(request: NextRequest) {
           <body>
             <div class="container">
               <div class="header">
-                <h1>🎉 Buchung erfolgreich!</h1>
+                <h1>✓ Buchung erfolgreich!</h1>
               </div>
               <div class="content">
                 <p>Hallo ${contactInfo.name},</p>
                 <p>vielen Dank für deine Buchung bei RoMa Munich! Deine Session wurde erfolgreich gebucht.</p>
                 
                 <div class="info-box">
-                  <h3 style="margin-top: 0; color: #1a365d;">📋 Buchungsdetails</h3>
+                  <h3 style="margin-top: 0; color: #1a365d;">Buchungsdetails</h3>
                   <p><strong>Mentor:</strong> ${tutorName}</p>
                   <p><strong>Datum:</strong> ${new Date(date).toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                   <p><strong>Uhrzeit:</strong> ${time} Uhr</p>
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
 
                 ${contactInfo.message ? `
                 <div class="info-box">
-                  <h3 style="margin-top: 0; color: #1a365d;">💬 Deine Nachricht</h3>
+                  <h3 style="margin-top: 0; color: #1a365d;">Deine Nachricht</h3>
                   <p>${contactInfo.message}</p>
                 </div>
                 ` : ''}
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
           <body>
             <div class="container">
               <div class="header">
-                <h2>🔔 Neue Buchung eingegangen</h2>
+                <h2>Neue Buchung eingegangen</h2>
               </div>
               <div class="content">
                 <div class="info-row">
