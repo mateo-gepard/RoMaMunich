@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/authOptions'
 import { adminDb } from '@/lib/firebaseAdmin'
 
-const MASTER_TUTOR_EMAIL = 'mateo.mamaladze@gmail.com'
+const MASTER_TUTOR_EMAIL = 'romamuenchen@gmail.com'
 
 export async function POST(request: NextRequest) {
   try {

@@ -5,7 +5,7 @@ import { Resend } from 'resend'
 import { adminDb } from '@/lib/firebaseAdmin'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const MASTER_TUTOR_EMAIL = 'mateo.mamaladze@gmail.com'
+const MASTER_TUTOR_EMAIL = 'romamuenchen@gmail.com'
 
 // Unique identifier for conversations
 const generateConversationId = (userId: string, tutorId: string) => {

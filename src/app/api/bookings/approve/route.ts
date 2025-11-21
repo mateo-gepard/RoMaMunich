@@ -5,7 +5,7 @@ import { adminDb } from '@/lib/firebaseAdmin'
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const MASTER_TUTOR_EMAIL = 'mateo.mamaladze@gmail.com'
+const MASTER_TUTOR_EMAIL = 'romamuenchen@gmail.com'
 
 export async function POST(request: NextRequest) {
   try {

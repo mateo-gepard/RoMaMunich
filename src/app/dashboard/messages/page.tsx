@@ -39,7 +39,7 @@ interface Tutor {
   name: string
 }
 
-const MASTER_TUTOR_EMAIL = 'mateo.mamaladze@gmail.com'
+const MASTER_TUTOR_EMAIL = 'romamuenchen@gmail.com'
 
 function MessagesContent() {
   const { data: session, status } = useSession()

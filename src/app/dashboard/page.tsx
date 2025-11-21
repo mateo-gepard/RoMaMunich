@@ -39,7 +39,7 @@ interface Session {
   meetingLink?: string
 }
 
-const MASTER_TUTOR_EMAIL = 'mateo.mamaladze@gmail.com'
+const MASTER_TUTOR_EMAIL = 'romamuenchen@gmail.com'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
