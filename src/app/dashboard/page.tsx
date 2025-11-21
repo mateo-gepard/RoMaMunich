@@ -311,9 +311,12 @@ export default function DashboardPage() {
   }
 
   const upcomingSessions = sessions.filter(s => {
-    if (s.status !== 'confirmed') return false
-    const endTime = getSessionEndTime(s)
-    return endTime > now
+    if (s.status === 'cancelled') return false
+    if (s.status === 'pending' || s.status === 'confirmed') {
+      const endTime = getSessionEndTime(s)
+      return endTime > now
+    }
+    return false
   }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
   const pastSessions = sessions.filter(s => {
@@ -622,11 +625,8 @@ export default function DashboardPage() {
                             <div className="flex items-center justify-between">
                               <div>
                                 <h4 className="font-semibold text-navy-900">
-                                  {sess.subject}
+                                  {sess.subject} mit {sess.tutorName}
                                 </h4>
-                                <p className="text-sm text-gray-600">
-                                  mit {sess.tutorName}
-                                </p>
                                 <div className="flex items-center gap-3 mt-2 text-sm text-gray-500">
                                   <span className="flex items-center gap-1">
                                     <Clock size={14} />
@@ -688,11 +688,8 @@ export default function DashboardPage() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <h3 className="font-semibold text-navy-900 text-lg">
-                              {sess.subject}
+                              {sess.subject} mit {sess.tutorName}
                             </h3>
-                            <span className="text-sm text-gray-500">
-                              mit {sess.tutorName}
-                            </span>
                           </div>
                           <div className="flex flex-wrap gap-3 text-sm text-gray-600">
                             <span className="flex items-center gap-1">
@@ -780,11 +777,8 @@ export default function DashboardPage() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <h3 className="font-semibold text-navy-900">
-                              {sess.subject}
+                              {sess.subject} mit {sess.tutorName}
                             </h3>
-                            <span className="text-sm text-gray-500">
-                              mit {sess.tutorName}
-                            </span>
                           </div>
                           <div className="flex flex-wrap gap-3 text-sm text-gray-600">
                             <span className="flex items-center gap-1">
