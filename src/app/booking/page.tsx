@@ -206,7 +206,7 @@ function BookingContent() {
       <div className="container-premium max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/matching/results" className="inline-flex items-center text-white hover:text-white mb-4">
+          <Link href="/matching/results" className="inline-flex items-center text-teal-500 hover:text-teal-600 mb-4">
             <ArrowLeft size={20} className="mr-2" />
             Zurück zu den Ergebnissen
           </Link>

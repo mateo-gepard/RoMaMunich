@@ -37,8 +37,8 @@ export default function ForgotPasswordPage() {
               Bitte überprüfe dein Postfach.
             </p>
             <Link
-              href="/login"
-              className="inline-flex items-center space-x-2 text-white hover:text-white font-semibold"
+              href="/"
+              className="inline-flex items-center space-x-2 text-teal-500 hover:text-teal-600 font-semibold"
             >
               <ArrowLeft size={20} />
               <span>Zurück zur Anmeldung</span>
@@ -104,7 +104,7 @@ export default function ForgotPasswordPage() {
           <div className="mt-6 text-center">
             <Link
               href="/login"
-              className="inline-flex items-center space-x-2 text-white hover:text-white font-semibold text-sm"
+              className="inline-flex items-center space-x-2 text-teal-500 hover:text-teal-600 font-semibold text-sm"
             >
               <ArrowLeft size={16} />
               <span>Zurück zur Anmeldung</span>
