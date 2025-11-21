@@ -19,11 +19,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { tutorId, tutorName, subject, message, sessionId, masterTutorOverride } = await request.json()
+    const { conversationId, recipientId, recipientName, tutorId, tutorName, subject, message, sessionId, masterTutorOverride } = await request.json()
 
-    if (!tutorId || !message) {
+    // Support both old format (tutorId) and new format (recipientId)
+    const actualRecipientId = recipientId || tutorId
+    const actualRecipientName = recipientName || tutorName
+
+    if (!actualRecipientId || !message) {
       return NextResponse.json(
-        { error: 'Tutor ID and message are required' },
+        { error: 'Recipient ID and message are required' },
         { status: 400 }
       )
     }
@@ -39,16 +43,16 @@ export async function POST(request: NextRequest) {
       actualSenderName = masterTutorOverride.sendAsName
     }
 
-    // Create conversation ID for threading
-    const conversationId = generateConversationId(actualSenderId, tutorId)
+    // Use existing conversationId if provided, otherwise generate new one
+    const finalConversationId = conversationId || generateConversationId(actualSenderId, actualRecipientId)
     
     // Store message in Firestore
     const messageRef = await adminDb.collection('messages').add({
-      conversationId,
+      conversationId: finalConversationId,
       senderId: actualSenderId,
       senderName: actualSenderName,
-      recipientId: tutorId,
-      recipientName: tutorName,
+      recipientId: actualRecipientId,
+      recipientName: actualRecipientName,
       subject,
       content: message,
       sessionId,
@@ -58,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     // Send notification to admin (same as booking system)
     // Use special reply-to address with conversationId for automatic processing
-    const replyToAddress = `messages+${conversationId}@roma-munich.de`
+    const replyToAddress = `messages+${finalConversationId}@roma-munich.de`
     
     await resend.emails.send({
       from: 'RoMa Munich <onboarding@resend.dev>', // Use Resend's test domain (same as booking system)
@@ -97,16 +101,16 @@ export async function POST(request: NextRequest) {
                   ${isMasterTutor ? `<p><strong>Gesendet von Master Account:</strong> ${session.user.email}</p>` : `<p><strong>Email:</strong> ${session.user.email}</p>`}
                   <p><strong>Betreff:</strong> ${subject || 'Keine Angabe'}</p>
                   <p><strong>Session ID:</strong> ${sessionId || 'N/A'}</p>
-                  <p><strong>Ziel-Tutor:</strong> ${tutorName}</p>
-                  <p><strong>Conversation ID:</strong> <span class="conv-id">${conversationId}</span></p>
+                  <p><strong>Empfänger:</strong> ${actualRecipientName}</p>
+                  <p><strong>Conversation ID:</strong> <span class="conv-id">${finalConversationId}</span></p>
                 </div>
                 
                 <div style="display: none;">
                   <!-- Structured tags for automatic parsing -->
-                  TUTOR: ${tutorName}
-                  RECIPIENT: ${actualSenderName}
-                  CONVERSATION_ID: ${conversationId}
-                  TUTOR_ID: ${tutorId}
+                  SENDER: ${actualSenderName}
+                  RECIPIENT: ${actualRecipientName}
+                  CONVERSATION_ID: ${finalConversationId}
+                  RECIPIENT_ID: ${actualRecipientId}
                   SENDER_ID: ${actualSenderId}
                   ${isMasterTutor ? `MASTER_ACCOUNT: ${session.user.email}` : ''}
                 </div>

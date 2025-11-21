@@ -158,8 +158,9 @@ function MessagesContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tutorId: isMasterTutor ? conv.studentId : conv.tutorId,
-          tutorName: isMasterTutor ? conv.studentName : conv.tutorName,
+          conversationId: selectedConversation,
+          recipientId: isMasterTutor ? conv.studentId : conv.tutorId,
+          recipientName: isMasterTutor ? conv.studentName : conv.tutorName,
           subject: 'Antwort',
           message: newMessage,
           sessionId: null,
