@@ -381,69 +381,9 @@ function BookingContent() {
                 </div>
               </div>
             )}
-                        }`}
-                      >
-                        {subject}
-                      </button>
-                    ))}
-                  </div>
-                </div>
 
-                {/* Tutor Selection */}
-                {selectedSubject && (
-                  <div className="mb-6">
-                    <h3 className="font-semibold text-navy-900 mb-3">Tutor wählen</h3>
-                    <div className="space-y-3">
-                      {availableTutors
-                        .filter(t => t.subjects.includes(selectedSubject))
-                        .map((tutor) => (
-                        <button
-                          key={tutor.id}
-                          onClick={() => setSelectedTutorOption(tutor.id)}
-                          className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
-                            selectedTutorOption === tutor.id
-                              ? 'border-teal-500 bg-teal-50'
-                              : 'border-gray-300 hover:border-gray-400'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-bold text-navy-900">{tutor.name}</h4>
-                              <p className="text-sm text-gray-600">{tutor.subjects.join(', ')}</p>
-                              <p className="text-xs text-gray-500 mt-1">{tutor.experience} Erfahrung • ⭐ {tutor.rating}</p>
-                            </div>
-                            <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center">
-                              <span className="text-white text-xl font-bold">
-                                {tutor.name.split(' ').map(n => n[0]).join('')}
-                              </span>
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex space-x-4 mt-6">
-                  <button
-                    onClick={() => setStep(1)}
-                    className="flex-1 bg-gray-200 text-navy-900 font-bold py-4 rounded-lg hover:bg-gray-300 transition-colors"
-                  >
-                    Zurück
-                  </button>
-                  <button
-                    onClick={() => setStep(2)}
-                    disabled={!selectedSubject || !selectedTutorOption}
-                    className="flex-1 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Weiter zu Datum & Zeit
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: Date & Time Selection */}
-            {step === 2 && (
+            {/* Step 3: Date & Time Selection */}
+            {step === 3 && (
               <div className="bg-white rounded-xl shadow-soft p-8">
                 <h2 className="text-2xl font-bold text-navy-900 mb-6">Datum & Uhrzeit wählen</h2>
                 
