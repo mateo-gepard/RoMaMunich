@@ -46,7 +46,7 @@ export default function LoginPage() {
       <div className="max-w-md w-full">
         {/* Logo */}
         <Link href="/" className="flex items-center justify-center space-x-3 mb-8">
-          <div className="w-12 h-12 bg-teal-500 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-2xl">RM</span>
           </div>
           <span className="font-serif font-bold text-3xl text-white">
@@ -86,7 +86,7 @@ export default function LoginPage() {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="deine@email.de"
                 />
               </div>
@@ -105,7 +105,7 @@ export default function LoginPage() {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="••••••••"
                 />
                 <button
@@ -122,7 +122,7 @@ export default function LoginPage() {
             <div className="text-right">
               <Link
                 href="/forgot-password"
-                className="text-sm text-teal-500 hover:text-teal-600 font-medium"
+                className="text-sm text-purple-500 hover:text-purple-600 font-medium"
               >
                 Passwort vergessen?
               </Link>
@@ -132,7 +132,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-teal-500 text-white font-bold py-3 rounded-lg hover:bg-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-purple-500 text-white font-bold py-3 rounded-lg hover:bg-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Anmeldung läuft...' : 'Anmelden'}
             </button>
@@ -154,7 +154,7 @@ export default function LoginPage() {
               Noch kein Konto?{' '}
               <Link
                 href="/register"
-                className="text-teal-500 hover:text-teal-600 font-semibold"
+                className="text-purple-500 hover:text-purple-600 font-semibold"
               >
                 Jetzt registrieren
               </Link>
@@ -175,3 +175,4 @@ export default function LoginPage() {
     </div>
   )
 }
+

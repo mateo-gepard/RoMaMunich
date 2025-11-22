@@ -70,7 +70,7 @@ export default function RegisterPage() {
       <div className="max-w-md w-full">
         {/* Logo */}
         <Link href="/" className="flex items-center justify-center space-x-3 mb-8">
-          <div className="w-12 h-12 bg-teal-500 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-2xl">RM</span>
           </div>
           <span className="font-serif font-bold text-3xl text-white">
@@ -96,7 +96,7 @@ export default function RegisterPage() {
               onClick={() => setUserType('PARENT')}
               className={`p-4 rounded-lg border-2 transition-all ${
                 userType === 'PARENT'
-                  ? 'border-teal-500 bg-teal-50 text-teal-900'
+                  ? 'border-purple-500 bg-purple-50 text-purple-900'
                   : 'border-gray-300 bg-white text-gray-600 hover:border-gray-400'
               }`}
             >
@@ -108,7 +108,7 @@ export default function RegisterPage() {
               onClick={() => setUserType('STUDENT')}
               className={`p-4 rounded-lg border-2 transition-all ${
                 userType === 'STUDENT'
-                  ? 'border-teal-500 bg-teal-50 text-teal-900'
+                  ? 'border-purple-500 bg-purple-50 text-purple-900'
                   : 'border-gray-300 bg-white text-gray-600 hover:border-gray-400'
               }`}
             >
@@ -138,7 +138,7 @@ export default function RegisterPage() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="Max Mustermann"
                 />
               </div>
@@ -157,7 +157,7 @@ export default function RegisterPage() {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="max@beispiel.de"
                 />
               </div>
@@ -175,7 +175,7 @@ export default function RegisterPage() {
                   id="phone"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="+49 151 12345678"
                 />
               </div>
@@ -194,7 +194,7 @@ export default function RegisterPage() {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="••••••••"
                 />
                 <button
@@ -220,7 +220,7 @@ export default function RegisterPage() {
                   required
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -230,7 +230,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-teal-500 text-white font-bold py-3 rounded-lg hover:bg-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+              className="w-full bg-purple-500 text-white font-bold py-3 rounded-lg hover:bg-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-6"
             >
               {isLoading ? 'Registrierung läuft...' : 'Registrieren'}
             </button>
@@ -252,7 +252,7 @@ export default function RegisterPage() {
               Schon registriert?{' '}
               <Link
                 href="/login"
-                className="text-teal-600 hover:text-teal-700 font-semibold"
+                className="text-purple-600 hover:text-purple-700 font-semibold"
               >
                 Jetzt anmelden
               </Link>
@@ -273,3 +273,4 @@ export default function RegisterPage() {
     </div>
   )
 }
+

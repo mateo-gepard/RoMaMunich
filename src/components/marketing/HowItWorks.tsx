@@ -72,7 +72,7 @@ export default function HowItWorks() {
                 {/* Card */}
                 <div className="relative z-10 space-y-4">
                   {/* Number Badge */}
-                  <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl shadow-xl">
+                  <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-xl">
                     <span className="text-6xl font-bold text-white">
                       {step.number}
                     </span>
@@ -80,7 +80,7 @@ export default function HowItWorks() {
 
                   {/* Icon */}
                   <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
-                    <Icon className="text-teal-500" size={24} />
+                    <Icon className="text-purple-500" size={24} />
                   </div>
 
                   {/* Content */}
@@ -100,7 +100,7 @@ export default function HowItWorks() {
         <div className="text-center mt-16">
           <a
             href="/matching"
-            className="inline-flex items-center space-x-2 px-10 py-5 bg-teal-500 text-white font-bold text-lg rounded-xl hover:bg-teal-400 transition-all duration-200 shadow-xl hover:shadow-2xl active:scale-95"
+            className="inline-flex items-center space-x-2 px-10 py-5 bg-purple-500 text-white font-bold text-lg rounded-xl hover:bg-purple-400 transition-all duration-200 shadow-xl hover:shadow-2xl active:scale-95"
           >
             <span>Jetzt starten</span>
           </a>
@@ -109,3 +109,4 @@ export default function HowItWorks() {
     </section>
   )
 }
+

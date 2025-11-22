@@ -675,7 +675,7 @@ export default function DashboardPage() {
                         if (sessionsOnDate.length > 0) {
                           return (
                             <div className="flex justify-center mt-1">
-                              <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
+                              <div className="w-2 h-2 bg-[#6E56CF] rounded-full"></div>
                             </div>
                           )
                         }
@@ -734,7 +734,7 @@ export default function DashboardPage() {
                                 </div>
                               </div>
                               <span
-                                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                className={`px-3 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1.5 ${
                                   sess.status === 'confirmed'
                                     ? 'bg-green-100 text-green-700'
                                     : sess.status === 'pending'
@@ -744,6 +744,14 @@ export default function DashboardPage() {
                                     : 'bg-red-100 text-red-700'
                                 }`}
                               >
+                                {sess.status === 'pending' && (
+                                  <span className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></span>
+                                )}
+                                {sess.status === 'confirmed' && (
+                                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                )}
                                 {sess.status === 'confirmed' && 'Bestätigt'}
                                 {sess.status === 'pending' && 'Ausstehend'}
                                 {sess.status === 'completed' && 'Abgeschlossen'}
@@ -1316,3 +1324,4 @@ export default function DashboardPage() {
     </div>
   )
 }
+

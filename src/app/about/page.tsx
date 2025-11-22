@@ -54,7 +54,7 @@ export default function AboutPage() {
         <div className="container-premium">
           <Link
             href="/"
-            className="inline-flex items-center text-teal-400 hover:text-teal-300 mb-6"
+            className="inline-flex items-center text-purple-400 hover:text-purple-300 mb-6"
           >
             ← Zurück zur Startseite
           </Link>
@@ -73,7 +73,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-teal-500 mb-2">
+                <div className="text-4xl md:text-5xl font-bold text-purple-500 mb-2">
                   {stat.value}
                 </div>
                 <div className="text-gray-600">{stat.label}</div>
@@ -121,8 +121,8 @@ export default function AboutPage() {
               const Icon = value.icon
               return (
                 <div key={index} className="text-center">
-                  <div className="w-16 h-16 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <Icon className="text-teal-600" size={32} />
+                  <div className="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <Icon className="text-purple-600" size={32} />
                   </div>
                   <h3 className="text-xl font-bold text-navy-900 mb-2">
                     {value.title}
@@ -143,7 +143,7 @@ export default function AboutPage() {
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {team.map((member, index) => (
             <div key={index} className="bg-white rounded-xl shadow-soft p-8 text-center">
-              <div className="w-24 h-24 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-white text-3xl font-bold">
                   {member.name?.split(' ').map(n => n[0]).join('') || '??'}
                 </span>
@@ -151,7 +151,7 @@ export default function AboutPage() {
               <h3 className="text-2xl font-bold text-navy-900 mb-1">
                 {member.name}
               </h3>
-              <p className="text-teal-600 font-semibold mb-3">{member.role}</p>
+              <p className="text-purple-600 font-semibold mb-3">{member.role}</p>
               <p className="text-gray-600">{member.bio}</p>
             </div>
           ))}
@@ -168,23 +168,23 @@ export default function AboutPage() {
             </p>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 bg-teal-500 rounded-lg flex items-center justify-center mb-3">
+                <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-3">
                   <Mail size={24} />
                 </div>
-                <a href="mailto:info@roma-munich.de" className="text-teal-400 hover:text-teal-300">
+                <a href="mailto:info@roma-munich.de" className="text-purple-400 hover:text-purple-300">
                   info@roma-munich.de
                 </a>
               </div>
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 bg-teal-500 rounded-lg flex items-center justify-center mb-3">
+                <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-3">
                   <Phone size={24} />
                 </div>
-                <a href="tel:+498912345678" className="text-teal-400 hover:text-teal-300">
+                <a href="tel:+498912345678" className="text-purple-400 hover:text-purple-300">
                   +49 89 1234 5678
                 </a>
               </div>
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 bg-teal-500 rounded-lg flex items-center justify-center mb-3">
+                <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-3">
                   <MapPin size={24} />
                 </div>
                 <p className="text-gray-300">
@@ -197,7 +197,7 @@ export default function AboutPage() {
             <div className="mt-12">
               <Link
                 href="/matching"
-                className="inline-block px-8 py-4 bg-teal-500 text-white font-bold rounded-lg hover:bg-teal-600 transition-colors"
+                className="inline-block px-8 py-4 bg-purple-500 text-white font-bold rounded-lg hover:bg-purple-600 transition-colors"
               >
                 Jetzt Mentor finden
               </Link>
@@ -208,3 +208,4 @@ export default function AboutPage() {
     </div>
   )
 }
+

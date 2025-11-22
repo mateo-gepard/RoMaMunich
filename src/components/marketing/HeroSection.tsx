@@ -3,9 +3,19 @@
 import Link from 'next/link'
 import { ArrowRight, Award, Users, TrendingUp } from 'lucide-react'
 import { useTranslations } from '@/hooks/useTranslations'
+import { useEffect, useState } from 'react'
 
 export default function HeroSection() {
   const { t } = useTranslations()
+  const [scrollY, setScrollY] = useState(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const stats = [
     { icon: Award, label: t.hero.stats.mentors, value: '10+' },
@@ -15,8 +25,11 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 overflow-hidden pt-16 sm:pt-0">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
+      {/* Background Pattern with Parallax */}
+      <div 
+        className="absolute inset-0 opacity-10 transition-transform duration-75"
+        style={{ transform: `translateY(${scrollY * 0.5}px)` }}
+      >
         <div className="absolute inset-0" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
         }}></div>
@@ -27,9 +40,9 @@ export default function HeroSection() {
           {/* Left Column - Content */}
           <div className="text-white space-y-6 sm:space-y-8 animate-fadeInUp">
             {/* Badge */}
-            <div className="inline-flex items-center space-x-2 bg-teal-500/20 border border-teal-500/30 rounded-full px-3 py-1.5 sm:px-4 sm:py-2\">
-              <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
-              <span className="text-teal-300 text-xs sm:text-sm font-medium">
+            <div className="inline-flex items-center space-x-2 bg-purple-500/20 border border-purple-500/30 rounded-full px-3 py-1.5 sm:px-4 sm:py-2\">
+              <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+              <span className="text-purple-300 text-xs sm:text-sm font-medium">
                 {t.hero.badge}
               </span>
             </div>
@@ -55,7 +68,7 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
               <Link
                 href="/matching"
-                className="inline-flex items-center justify-center space-x-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-teal-500 text-white font-bold rounded-lg hover:bg-teal-400 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95 text-center"
+                className="inline-flex items-center justify-center space-x-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-purple-500 text-white font-bold rounded-lg hover:bg-purple-400 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95 text-center"
               >
                 <span>{t.hero.cta}</span>
                 <ArrowRight size={20} />
@@ -74,7 +87,7 @@ export default function HeroSection() {
                 const Icon = stat.icon
                 return (
                   <div key={index} className="space-y-1 sm:space-y-2">
-                    <Icon className="text-teal-500" size={20} />
+                    <Icon className="text-purple-500" size={20} />
                     <div className="text-xl sm:text-2xl font-bold text-white">
                       {stat.value}
                     </div>
@@ -104,7 +117,7 @@ export default function HeroSection() {
             <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-premium p-6 max-w-xs">
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                     <Award className="text-white" size={24} />
                   </div>
                 </div>
@@ -139,3 +152,4 @@ export default function HeroSection() {
     </section>
   )
 }
+

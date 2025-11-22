@@ -212,7 +212,7 @@ function BookingContent() {
       <div className="container-premium max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/" className="inline-flex items-center text-teal-500 hover:text-teal-600 mb-4">
+          <Link href="/" className="inline-flex items-center text-purple-500 hover:text-purple-600 mb-4">
             <ArrowLeft size={20} className="mr-2" />
             Zurück zur Startseite
           </Link>
@@ -229,14 +229,14 @@ function BookingContent() {
               <div key={s} className="flex items-center">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                    step >= s ? 'bg-teal-500 text-white' : 'bg-gray-300 text-gray-600'
+                    step >= s ? 'bg-purple-500 text-white' : 'bg-gray-300 text-gray-600'
                   }`}
                 >
                   {s}
                 </div>
                 {s < 5 && (
                   <div
-                    className={`w-12 h-1 ${step > s ? 'bg-teal-500' : 'bg-gray-300'}`}
+                    className={`w-12 h-1 ${step > s ? 'bg-purple-500' : 'bg-gray-300'}`}
                   />
                 )}
               </div>
@@ -271,7 +271,7 @@ function BookingContent() {
                         onClick={() => setSelectedSubject(subject)}
                         className={`p-3 rounded-lg border-2 transition-all ${
                           selectedSubject === subject
-                            ? 'border-teal-500 bg-teal-50 text-teal-900'
+                            ? 'border-purple-500 bg-purple-50 text-purple-900'
                             : 'border-gray-300 hover:border-gray-400 text-gray-700'
                         }`}
                       >
@@ -294,7 +294,7 @@ function BookingContent() {
                           onClick={() => setSelectedTutor(tutor)}
                           className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
                             selectedTutor?.id === tutor.id
-                              ? 'border-teal-500 bg-teal-50'
+                              ? 'border-purple-500 bg-purple-50'
                               : 'border-gray-300 hover:border-gray-400'
                           }`}
                         >
@@ -304,7 +304,7 @@ function BookingContent() {
                               <p className="text-sm text-gray-600">{tutor.subjects?.join(', ') || ''}</p>
                               <p className="text-xs text-gray-500 mt-1">{tutor.experience} Erfahrung • ⭐ {tutor.rating}</p>
                             </div>
-                            <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center">
+                            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
                               <span className="text-white text-xl font-bold">
                                 {tutor.name?.split(' ').map(n => n[0]).join('') || '??'}
                               </span>
@@ -319,7 +319,7 @@ function BookingContent() {
                 <button
                   onClick={() => setStep(2)}
                   disabled={!selectedSubject || !selectedTutor}
-                  className="w-full mt-6 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full mt-6 bg-purple-500 text-white font-bold py-4 rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Weiter zum Paket
                 </button>
@@ -346,7 +346,7 @@ function BookingContent() {
                       onClick={() => setSelectedPackage(pkg.id as any)}
                       className={`w-full p-6 rounded-lg border-2 transition-all text-left ${
                         selectedPackage === pkg.id
-                          ? 'border-teal-500 bg-teal-50'
+                          ? 'border-purple-500 bg-purple-50'
                           : 'border-gray-300 hover:border-gray-400'
                       }`}
                     >
@@ -374,7 +374,7 @@ function BookingContent() {
                   </button>
                   <button
                     onClick={() => setStep(3)}
-                    className="flex-1 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors"
+                    className="flex-1 bg-purple-500 text-white font-bold py-4 rounded-lg hover:bg-purple-600 transition-colors"
                   >
                     Weiter zu Datum & Zeit
                   </button>
@@ -400,7 +400,7 @@ function BookingContent() {
                           onClick={() => setSelectedDate(day)}
                           className={`p-3 rounded-lg border-2 transition-all ${
                             isSelected
-                              ? 'border-teal-500 bg-teal-50'
+                              ? 'border-purple-500 bg-purple-50'
                               : 'border-gray-300 hover:border-gray-400'
                           }`}
                         >
@@ -424,7 +424,7 @@ function BookingContent() {
                         disabled={!slot.available}
                         className={`p-3 rounded-lg border-2 transition-all ${
                           selectedTime === slot.time
-                            ? 'border-teal-500 bg-teal-50'
+                            ? 'border-purple-500 bg-purple-50'
                             : slot.available
                             ? 'border-gray-300 hover:border-gray-400'
                             : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
@@ -446,7 +446,7 @@ function BookingContent() {
                   <button
                     onClick={() => selectedTime && setStep(4)}
                     disabled={!selectedTime}
-                    className="flex-1 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 bg-purple-500 text-white font-bold py-4 rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Weiter zu Ort
                   </button>
@@ -463,7 +463,7 @@ function BookingContent() {
                     onClick={() => setSelectedLocation('online')}
                     className={`w-full p-6 rounded-lg border-2 transition-all text-left ${
                       selectedLocation === 'online'
-                        ? 'border-teal-500 bg-teal-50'
+                        ? 'border-purple-500 bg-purple-50'
                         : 'border-gray-300 hover:border-gray-400'
                     }`}
                   >
@@ -480,7 +480,7 @@ function BookingContent() {
                     onClick={() => setSelectedLocation('in-person')}
                     className={`w-full p-6 rounded-lg border-2 transition-all text-left ${
                       selectedLocation === 'in-person'
-                        ? 'border-teal-500 bg-teal-50'
+                        ? 'border-purple-500 bg-purple-50'
                         : 'border-gray-300 hover:border-gray-400'
                     }`}
                   >
@@ -503,7 +503,7 @@ function BookingContent() {
                   </button>
                   <button
                     onClick={() => setStep(5)}
-                    className="flex-1 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors"
+                    className="flex-1 bg-purple-500 text-white font-bold py-4 rounded-lg hover:bg-purple-600 transition-colors"
                   >
                     Weiter zu Kontakt
                   </button>
@@ -527,7 +527,7 @@ function BookingContent() {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         placeholder="Max Mustermann"
                       />
                     </div>
@@ -544,7 +544,7 @@ function BookingContent() {
                         required
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         placeholder="max@beispiel.de"
                       />
                     </div>
@@ -560,7 +560,7 @@ function BookingContent() {
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         placeholder="+49 151 12345678"
                       />
                     </div>
@@ -573,7 +573,7 @@ function BookingContent() {
                     <textarea
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       rows={4}
                       placeholder="Besondere Wünsche oder Themen..."
                     />
@@ -590,7 +590,7 @@ function BookingContent() {
                   <button
                     onClick={handleSubmit}
                     disabled={isLoading || !formData.name || !formData.email}
-                    className="flex-1 bg-teal-500 text-white font-bold py-4 rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 bg-purple-500 text-white font-bold py-4 rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isLoading ? 'Wird gebucht...' : 'Buchung abschließen'}
                   </button>
@@ -644,7 +644,7 @@ function BookingContent() {
                     {selectedLocation === 'online' ? (
                       <Video className="text-white mt-1" size={20} />
                     ) : (
-                      <MapPin className="text-teal-600 mt-1" size={20} />
+                      <MapPin className="text-purple-600 mt-1" size={20} />
                     )}
                     <div>
                       <div className="text-sm text-gray-600">Ort</div>
@@ -658,7 +658,7 @@ function BookingContent() {
                 <div className="pt-4 border-t border-gray-200">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-600">Preis</span>
-                    <span className="text-2xl font-bold text-teal-600">
+                    <span className="text-2xl font-bold text-purple-600">
                       {packages.find(p => p.id === selectedPackage)?.price === 0
                         ? 'Kostenlos'
                         : `${packages.find(p => p.id === selectedPackage)?.price}€`}
@@ -684,3 +684,4 @@ export default function BookingPage() {
     </Suspense>
   )
 }
+

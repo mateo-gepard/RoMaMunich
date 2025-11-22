@@ -36,7 +36,7 @@ export default function CTA() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <Link
               href="/matching"
-              className="inline-flex items-center space-x-2 px-10 py-5 bg-teal-500 text-white font-bold text-lg rounded-xl hover:bg-teal-400 transition-all duration-200 shadow-xl hover:shadow-2xl active:scale-95"
+              className="inline-flex items-center space-x-2 px-10 py-5 bg-purple-500 text-white font-bold text-lg rounded-xl hover:bg-purple-400 transition-all duration-200 shadow-xl hover:shadow-2xl active:scale-95"
             >
               <span>Erstgespräch buchen</span>
               <ArrowRight size={24} />
@@ -73,3 +73,4 @@ export default function CTA() {
     </section>
   )
 }
+

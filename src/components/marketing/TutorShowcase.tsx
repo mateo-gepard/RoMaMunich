@@ -51,7 +51,7 @@ export default function TutorShowcase() {
       <div className="container-premium">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center space-x-2 bg-teal-500 rounded-full px-4 py-2 mb-6">
+          <div className="inline-flex items-center space-x-2 bg-purple-500 rounded-full px-4 py-2 mb-6">
             <Sparkles className="text-white" size={20} />
             <span className="text-white font-semibold">
               Ausgewählte Mentoren
@@ -69,7 +69,7 @@ export default function TutorShowcase() {
           {featuredTutors.map((tutor, index) => (
             <div
               key={index}
-              className="card-premium group cursor-pointer"
+              className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-premium p-8 border border-white/20 hover:shadow-2xl transition-all duration-300 group cursor-pointer hover:scale-[1.02] hover:-translate-y-1"
             >
               {/* Profile Image Placeholder */}
               <div className="relative w-full aspect-square rounded-xl bg-gradient-to-br from-navy-600 to-navy-800 mb-6 overflow-hidden">
@@ -114,7 +114,7 @@ export default function TutorShowcase() {
                   {tutor.achievements.map((achievement, i) => (
                     <div key={i} className="flex items-start space-x-2">
                       <Trophy
-                        className="text-teal-500 flex-shrink-0 mt-1"
+                        className="text-purple-500 flex-shrink-0 mt-1"
                         size={16}
                       />
                       <span className="text-sm text-gray-700">{achievement}</span>
@@ -125,8 +125,8 @@ export default function TutorShowcase() {
                 {/* Stats */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-200 mb-4">
                   <div>
-                    <div className="flex items-center space-x-1 text-teal-500 font-semibold">
-                      <Star className="fill-teal-500" size={18} />
+                    <div className="flex items-center space-x-1 text-purple-500 font-semibold">
+                      <Star className="fill-purple-500" size={18} />
                       <span className="text-lg">{tutor.rating}</span>
                     </div>
                     <div className="text-xs text-gray-500">
@@ -168,3 +168,4 @@ export default function TutorShowcase() {
     </section>
   )
 }
+

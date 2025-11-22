@@ -66,14 +66,14 @@ export default function Testimonials() {
                   {Array.from({ length: testimonial.rating }).map((_, i) => (
                     <Star
                       key={i}
-                      className="text-teal-500 fill-teal-500"
+                      className="text-purple-500 fill-purple-500"
                       size={20}
                     />
                   ))}
                 </div>
 
                 {/* Result Badge */}
-                <div className="inline-block bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-semibold">
+                <div className="inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-semibold">
                   {testimonial.result}
                 </div>
 
@@ -100,7 +100,7 @@ export default function Testimonials() {
         <div className="mt-16 bg-navy-900 rounded-2xl p-8 md:p-12">
           <div className="grid md:grid-cols-3 gap-8 text-center text-white">
             <div>
-              <div className="text-5xl font-bold text-teal-500 mb-2">
+              <div className="text-5xl font-bold text-purple-500 mb-2">
                 100%
               </div>
               <div className="text-gray-300">
@@ -108,7 +108,7 @@ export default function Testimonials() {
               </div>
             </div>
             <div>
-              <div className="text-5xl font-bold text-teal-500 mb-2">
+              <div className="text-5xl font-bold text-purple-500 mb-2">
                 Top
               </div>
               <div className="text-gray-300">
@@ -116,7 +116,7 @@ export default function Testimonials() {
               </div>
             </div>
             <div>
-              <div className="text-5xl font-bold text-teal-500 mb-2">
+              <div className="text-5xl font-bold text-purple-500 mb-2">
                 1:1
               </div>
               <div className="text-gray-300">
@@ -129,3 +129,4 @@ export default function Testimonials() {
     </section>
   )
 }
+

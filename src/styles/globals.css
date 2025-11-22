@@ -9,7 +9,7 @@
     --color-navy-700: #102840;
     --color-navy-600: #153254;
     --color-navy-500: #1a365d;
-    --color-teal-500: #14b8a6;
+    --color-purple-500: #6E56CF;
   }
 
   * {
@@ -87,8 +87,8 @@
 
 @layer utilities {
 
-  .text-gradient-teal {
-    @apply bg-gradient-to-r from-teal-500 to-teal-500 bg-clip-text text-transparent;
+  .text-gradient-purple {
+    @apply bg-gradient-to-r from-[#6E56CF] to-[#6E56CF] bg-clip-text text-transparent;
   }
 
   .text-purple {
@@ -183,7 +183,7 @@
 }
 
 .calendar-container .react-calendar__tile:hover {
-  @apply bg-teal-50;
+  @apply bg-purple-50;
 }
 
 .calendar-container .react-calendar__tile--active {
@@ -195,7 +195,7 @@
 }
 
 .calendar-container .react-calendar__tile--now {
-  @apply bg-teal-100;
+  @apply bg-purple-100;
 }
 
 .calendar-container .react-calendar__navigation button {
@@ -212,5 +212,5 @@
 
   /* Selection color */
   ::selection {
-    @apply bg-teal-200 text-navy-900;
+    @apply bg-purple-200 text-navy-900;
   }

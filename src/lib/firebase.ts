@@ -18,3 +18,4 @@ export const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfi
 // Auth und Firestore exports
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+

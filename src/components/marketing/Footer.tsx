@@ -13,7 +13,7 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
                 <span className="text-navy-900 font-bold text-xl">RM</span>
               </div>
               <span className="font-serif font-bold text-2xl">
@@ -23,7 +23,7 @@ export default function Footer() {
             <p className="text-gray-400 leading-relaxed">
               Premium 1:1 Mentoring von Münchens besten Schülern.
               <br />
-              <span className="text-teal-500 font-semibold">
+              <span className="text-purple-500 font-semibold">
                 Qualität. Nähe. Struktur.
               </span>
             </p>
@@ -159,13 +159,13 @@ export default function Footer() {
             <div className="flex space-x-4 mt-6">
               <a
                 href="#"
-                className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-teal-500 transition-colors"
+                className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-purple-500 transition-colors"
               >
                 <Instagram size={20} />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-teal-500 transition-colors"
+                className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-purple-500 transition-colors"
               >
                 <Linkedin size={20} />
               </a>
@@ -205,3 +205,4 @@ export default function Footer() {
     </footer>
   )
 }
+

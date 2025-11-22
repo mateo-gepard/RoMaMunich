@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -67,7 +67,7 @@ function MessagesContent() {
   const handleDeleteConversation = async (conversationId: string, e: React.MouseEvent) => {
     e.stopPropagation() // Prevent selecting the conversation
     
-    if (!confirm('Diese Konversation ausblenden? (Sie wird nur für dich verborgen)')) {
+    if (!confirm('Diese Konversation ausblenden? (Sie wird nur f�r dich verborgen)')) {
       return
     }
 
@@ -168,7 +168,7 @@ function MessagesContent() {
 
     // Master tutor must select a tutor to reply as
     if (isMasterTutor && !selectedTutorId) {
-      alert('Bitte wähle einen Tutor aus, als der du antworten möchtest')
+      alert('Bitte w�hle einen Tutor aus, als der du antworten m�chtest')
       return
     }
 
@@ -239,13 +239,13 @@ function MessagesContent() {
           <div className="flex items-center justify-between">
             <Link href="/dashboard" className="flex items-center space-x-3">
               <ArrowLeft className="w-6 h-6 text-navy-600" />
-              <span className="font-semibold text-navy-900">Zurück zum Dashboard</span>
+              <span className="font-semibold text-navy-900">Zur�ck zum Dashboard</span>
             </Link>
             <div className="flex items-center gap-3">
               <h1 className="text-xl font-bold text-navy-900">Nachrichten</h1>
               {isMasterTutor && (
                 <span className="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full">
-                  🔑 MASTER TUTOR
+                  ?? MASTER TUTOR
                 </span>
               )}
             </div>
@@ -271,7 +271,7 @@ function MessagesContent() {
                     <div
                       key={conv.conversationId}
                       className={`relative group ${
-                        selectedConversation === conv.conversationId ? 'bg-teal-50' : ''
+                        selectedConversation === conv.conversationId ? 'bg-purple-50' : ''
                       }`}
                     >
                       <button
@@ -281,7 +281,7 @@ function MessagesContent() {
                         <div className="flex items-start justify-between mb-1">
                           <div className="flex-1 pr-8">
                             <h3 className="font-semibold text-navy-900 text-sm">
-                              {isMasterTutor ? `${conv.studentName} → ${conv.tutorName}` : conv.tutorName}
+                              {isMasterTutor ? `${conv.studentName} ? ${conv.tutorName}` : conv.tutorName}
                             </h3>
                             {isMasterTutor && (
                               <p className="text-xs text-gray-500 mt-0.5">
@@ -290,7 +290,7 @@ function MessagesContent() {
                             )}
                           </div>
                           {conv.unreadCount > 0 && (
-                            <span className="bg-teal-600 text-white text-xs px-2 py-0.5 rounded-full">
+                            <span className="bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full">
                               {conv.unreadCount}
                             </span>
                           )}
@@ -336,15 +336,15 @@ function MessagesContent() {
                     const isFromMe = msg.senderId === userId
                     return (
                       <div key={msg.id} className={`flex ${isFromMe ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[70%] ${isFromMe ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-900'} rounded-lg p-3`}>
+                        <div className={`max-w-[70%] ${isFromMe ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-900'} rounded-lg p-3`}>
                           {msg.subject && (
-                            <p className={`text-xs font-semibold mb-1 ${isFromMe ? 'text-teal-100' : 'text-gray-500'}`}>
+                            <p className={`text-xs font-semibold mb-1 ${isFromMe ? 'text-purple-100' : 'text-gray-500'}`}>
                               {msg.subject}
                             </p>
                           )}
                           <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                           <div className="flex items-center justify-end gap-1 mt-1">
-                            <p className={`text-xs ${isFromMe ? 'text-teal-100' : 'text-gray-500'}`}>
+                            <p className={`text-xs ${isFromMe ? 'text-purple-100' : 'text-gray-500'}`}>
                               {new Date(msg.createdAt).toLocaleTimeString('de-DE', {
                                 hour: '2-digit',
                                 minute: '2-digit'
@@ -352,9 +352,9 @@ function MessagesContent() {
                             </p>
                             {isFromMe && (
                               msg.isRead ? (
-                                <CheckCheck className="w-3 h-3 text-teal-100" />
+                                <CheckCheck className="w-3 h-3 text-purple-100" />
                               ) : (
-                                <Clock className="w-3 h-3 text-teal-100" />
+                                <Clock className="w-3 h-3 text-purple-100" />
                               )
                             )}
                           </div>
@@ -374,9 +374,9 @@ function MessagesContent() {
                       <select
                         value={selectedTutorId}
                         onChange={(e) => setSelectedTutorId(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-yellow-50"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent bg-yellow-50"
                       >
-                        <option value="">-- Tutor auswählen --</option>
+                        <option value="">-- Tutor ausw�hlen --</option>
                         {availableTutors.map(tutor => (
                           <option key={tutor.id} value={tutor.id}>
                             {tutor.name}
@@ -392,13 +392,13 @@ function MessagesContent() {
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                       placeholder="Nachricht schreiben..."
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                       disabled={sending}
                     />
                     <button
                       onClick={handleSendMessage}
                       disabled={!newMessage.trim() || sending}
-                      className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                      className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                     >
                       <Send className="w-4 h-4" />
                       Senden
@@ -410,7 +410,7 @@ function MessagesContent() {
               <div className="flex-1 flex items-center justify-center text-center p-8">
                 <div>
                   <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-navy-900 mb-2">Wähle eine Konversation</h3>
+                  <h3 className="text-lg font-semibold text-navy-900 mb-2">W�hle eine Konversation</h3>
                   <p className="text-gray-600">Klicke auf eine Konversation, um die Nachrichten zu sehen</p>
                 </div>
               </div>
@@ -427,7 +427,7 @@ export default function MessagesPage() {
     <Suspense fallback={
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Nachrichten werden geladen...</p>
         </div>
       </div>
@@ -436,3 +436,4 @@ export default function MessagesPage() {
     </Suspense>
   )
 }
+

@@ -5,12 +5,10 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { useTranslations } from '@/hooks/useTranslations'
-import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Navbar() {
   const { data: session } = useSession()
-  const { t, locale } = useTranslations()
-  const { setLocale } = useLanguage()
+  const { t } = useTranslations()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -26,7 +24,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/95 backdrop-blur-premium shadow-soft'
+          ? 'bg-white/80 backdrop-blur-xl shadow-lg border-b border-white/20'
           : 'bg-transparent text-white'
       }`}
     >
@@ -90,34 +88,6 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="hidden lg:flex items-center space-x-6">
-            {/* Language Switcher */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => setLocale('de')}
-                className={`px-3 py-1 rounded-md font-medium text-sm transition-colors ${
-                  locale === 'de'
-                    ? 'bg-teal-500 text-white'
-                    : isScrolled 
-                      ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
-              >
-                DE
-              </button>
-              <button
-                onClick={() => setLocale('en')}
-                className={`px-3 py-1 rounded-md font-medium text-sm transition-colors ${
-                  locale === 'en'
-                    ? 'bg-teal-500 text-white'
-                    : isScrolled 
-                      ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
-              >
-                EN
-              </button>
-            </div>
-
             <Link
               href={session ? "/dashboard" : "/login"}
               className={`font-medium transition-colors ${
@@ -179,30 +149,6 @@ export default function Navbar() {
                 </Link>
                 
                 <div className="border-t border-gray-200 pt-4 mt-4 space-y-3">
-                  {/* Language Switcher Mobile */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setLocale('de')}
-                      className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all active:scale-95 ${
-                        locale === 'de'
-                          ? 'bg-teal-500 text-white shadow-lg'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      DE
-                    </button>
-                    <button
-                      onClick={() => setLocale('en')}
-                      className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all active:scale-95 ${
-                        locale === 'en'
-                          ? 'bg-teal-500 text-white shadow-lg'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      EN
-                    </button>
-                  </div>
-                  
                   <Link
                     href={session ? "/dashboard" : "/login"}
                     className="block text-navy-700 font-medium px-4 py-3.5 hover:bg-gray-50 active:bg-gray-100 rounded-lg transition-colors text-center"
@@ -226,3 +172,4 @@ export default function Navbar() {
     </nav>
   )
 }
+

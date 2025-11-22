@@ -179,7 +179,7 @@ export default function MatchingResultsPage() {
 
                 {/* Right: Actions */}
                 <div className="flex flex-col justify-between">
-                  <div className="bg-teal-50 border-2 border-teal-500 rounded-lg p-4 mb-4">
+                  <div className="bg-purple-50 border-2 border-purple-500 rounded-lg p-4 mb-4">
                     <div className="text-center">
                       <div className="text-lg font-bold text-white mb-1">
                         1. Stunde kostenlos
@@ -236,3 +236,4 @@ export default function MatchingResultsPage() {
     </div>
   )
 }
+

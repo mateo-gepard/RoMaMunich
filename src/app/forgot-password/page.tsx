@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
       <div className="min-h-screen bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 flex items-center justify-center px-4">
         <div className="max-w-md w-full">
           <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
-            <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="text-white" size={32} />
             </div>
             <h1 className="text-2xl font-bold text-navy-900 mb-4">
@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center space-x-2 text-teal-500 hover:text-teal-600 font-semibold"
+              className="inline-flex items-center space-x-2 text-purple-500 hover:text-purple-600 font-semibold"
             >
               <ArrowLeft size={20} />
               <span>Zurück zur Anmeldung</span>
@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
       <div className="max-w-md w-full">
         {/* Logo */}
         <Link href="/" className="flex items-center justify-center space-x-3 mb-8">
-          <div className="w-12 h-12 bg-teal-500 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-2xl">RM</span>
           </div>
           <span className="font-serif font-bold text-3xl text-white">
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="deine@email.de"
                 />
               </div>
@@ -95,7 +95,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-teal-500 text-white font-bold py-3 rounded-lg hover:bg-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-purple-500 text-white font-bold py-3 rounded-lg hover:bg-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Wird gesendet...' : 'Link senden'}
             </button>
@@ -104,7 +104,7 @@ export default function ForgotPasswordPage() {
           <div className="mt-6 text-center">
             <Link
               href="/login"
-              className="inline-flex items-center space-x-2 text-teal-500 hover:text-teal-600 font-semibold text-sm"
+              className="inline-flex items-center space-x-2 text-purple-500 hover:text-purple-600 font-semibold text-sm"
             >
               <ArrowLeft size={16} />
               <span>Zurück zur Anmeldung</span>
@@ -115,3 +115,4 @@ export default function ForgotPasswordPage() {
     </div>
   )
 }
+

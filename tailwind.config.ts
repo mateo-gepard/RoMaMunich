@@ -33,7 +33,7 @@ const config: Config = {
           800: '#0c1e30',
           900: '#081525',
         },
-        teal: {
+        purple: {
           50: '#f5f3ff',
           100: '#ede9fe',
           200: '#ddd6fe',
@@ -42,8 +42,8 @@ const config: Config = {
           500: '#6E56CF',
           600: '#6E56CF',
           700: '#6E56CF',
-          800: '#5b21b6',
-          900: '#4c1d95',
+          800: '#6E56CF',
+          900: '#6E56CF',
         },
         gray: {
           50: '#f0f4f8',

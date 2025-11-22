@@ -113,7 +113,7 @@ export default function HowItWorksPage() {
         <div className="container-premium">
           <Link
             href="/"
-            className="inline-flex items-center text-teal-400 hover:text-teal-300 mb-6"
+            className="inline-flex items-center text-purple-400 hover:text-purple-300 mb-6"
           >
             ← Zurück zur Startseite
           </Link>
@@ -141,7 +141,7 @@ export default function HowItWorksPage() {
                 {/* Icon */}
                 <div className="w-full md:w-1/3 flex justify-center">
                   <div className="relative">
-                    <div className="w-32 h-32 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl shadow-xl flex items-center justify-center">
+                    <div className="w-32 h-32 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-xl flex items-center justify-center">
                       <Icon className="text-white" size={64} />
                     </div>
                     <div className="absolute -top-4 -right-4 w-16 h-16 bg-navy-900 rounded-full flex items-center justify-center text-white text-3xl font-bold">
@@ -161,7 +161,7 @@ export default function HowItWorksPage() {
                   <ul className="space-y-3">
                     {step.details.map((detail, i) => (
                       <li key={i} className="flex items-start space-x-3">
-                        <CheckCircle className="text-teal-500 flex-shrink-0 mt-1" size={20} />
+                        <CheckCircle className="text-purple-500 flex-shrink-0 mt-1" size={20} />
                         <span className="text-gray-700">{detail}</span>
                       </li>
                     ))}
@@ -184,7 +184,7 @@ export default function HowItWorksPage() {
               const Icon = benefit.icon
               return (
                 <div key={index} className="text-center">
-                  <div className="w-16 h-16 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <Icon className="text-white" size={32} />
                   </div>
                   <h3 className="text-xl font-bold text-navy-900 mb-2">
@@ -226,7 +226,7 @@ export default function HowItWorksPage() {
           </p>
           <Link
             href="/matching"
-            className="inline-block px-10 py-5 bg-teal-500 text-white font-bold text-lg rounded-xl hover:bg-teal-600 transition-all shadow-xl hover:shadow-2xl"
+            className="inline-block px-10 py-5 bg-purple-500 text-white font-bold text-lg rounded-xl hover:bg-purple-600 transition-all shadow-xl hover:shadow-2xl"
           >
             Jetzt Matching starten
           </Link>
@@ -235,3 +235,4 @@ export default function HowItWorksPage() {
     </div>
   )
 }
+

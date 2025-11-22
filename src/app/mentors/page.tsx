@@ -138,7 +138,7 @@ export default function MentorsPage() {
         <div className="container-premium">
           <Link
             href="/"
-            className="inline-flex items-center text-teal-400 hover:text-teal-300 mb-6"
+            className="inline-flex items-center text-purple-400 hover:text-purple-300 mb-6"
           >
             ← Zurück zur Startseite
           </Link>
@@ -161,7 +161,7 @@ export default function MentorsPage() {
                 placeholder="Suche nach Namen oder Fach..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
 
@@ -170,7 +170,7 @@ export default function MentorsPage() {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="appearance-none px-6 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white cursor-pointer"
+                className="appearance-none px-6 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white cursor-pointer"
               >
                 <option value="all">Alle Fächer</option>
                 {subjects.slice(1).map((subject) => (
@@ -194,7 +194,7 @@ export default function MentorsPage() {
         {/* Tutors Grid */}
         {isLoading ? (
           <div className="text-center py-12">
-            <div className="inline-block w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="inline-block w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
             <p className="text-gray-600 mt-4">Lade Mentoren...</p>
           </div>
         ) : filteredTutors.length === 0 ? (
@@ -213,8 +213,8 @@ export default function MentorsPage() {
                     </h3>
                     <p className="text-gray-600 text-sm">{tutor.age} Jahre</p>
                   </div>
-                  <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <Award className="text-teal-600" size={24} />
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <Award className="text-purple-600" size={24} />
                   </div>
                 </div>
 
@@ -232,7 +232,7 @@ export default function MentorsPage() {
 
                 {/* Early Study */}
                 <div className="flex items-center space-x-2 mb-4 text-gray-700">
-                  <GraduationCap size={18} className="text-teal-500" />
+                  <GraduationCap size={18} className="text-purple-500" />
                   <span className="text-sm font-medium">{tutor.earlyStudy}</span>
                 </div>
 
@@ -240,7 +240,7 @@ export default function MentorsPage() {
                 <div className="space-y-2 mb-4">
                   {tutor.achievements.slice(0, 2).map((achievement, i) => (
                     <div key={i} className="flex items-start space-x-2">
-                      <Trophy className="text-teal-500 flex-shrink-0 mt-1" size={16} />
+                      <Trophy className="text-purple-500 flex-shrink-0 mt-1" size={16} />
                       <span className="text-sm text-gray-700">{achievement}</span>
                     </div>
                   ))}
@@ -249,8 +249,8 @@ export default function MentorsPage() {
                 {/* Stats */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-200 mb-4">
                   <div>
-                    <div className="flex items-center space-x-1 text-teal-500 font-semibold">
-                      <Star className="fill-teal-500" size={18} />
+                    <div className="flex items-center space-x-1 text-purple-500 font-semibold">
+                      <Star className="fill-purple-500" size={18} />
                       <span className="text-lg">{tutor.rating}</span>
                     </div>
                     <div className="text-xs text-gray-500">{tutor.sessions} Sessions</div>
@@ -266,7 +266,7 @@ export default function MentorsPage() {
                 {/* CTA */}
                 <Link
                   href={`/matching?tutor=${tutor.id}`}
-                  className="block w-full text-center py-3 bg-teal-500 text-white font-bold rounded-lg hover:bg-teal-600 transition-colors"
+                  className="block w-full text-center py-3 bg-purple-500 text-white font-bold rounded-lg hover:bg-purple-600 transition-colors"
                 >
                   Jetzt anfragen
                 </Link>
@@ -283,7 +283,7 @@ export default function MentorsPage() {
           </p>
           <Link
             href="/matching"
-            className="inline-block px-8 py-4 bg-teal-500 text-white font-bold rounded-lg hover:bg-teal-600 transition-colors"
+            className="inline-block px-8 py-4 bg-purple-500 text-white font-bold rounded-lg hover:bg-purple-600 transition-colors"
           >
             Matching starten
           </Link>
@@ -292,3 +292,4 @@ export default function MentorsPage() {
     </div>
   )
 }
+

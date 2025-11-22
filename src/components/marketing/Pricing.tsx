@@ -106,14 +106,14 @@ export default function Pricing() {
               key={index}
               className={`relative rounded-2xl p-8 transition-all duration-300 ${
                 pkg.popular
-                  ? 'bg-navy-900 text-white shadow-premium scale-105 border-4 border-teal-500'
+                  ? 'bg-navy-900 text-white shadow-premium scale-105 border-4 border-purple-500'
                   : 'bg-white shadow-soft hover:shadow-premium border border-gray-200'
               }`}
             >
               {/* Popular Badge */}
               {pkg.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className="flex items-center space-x-2 bg-teal-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
+                  <div className="flex items-center space-x-2 bg-purple-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
                     <Sparkles size={16} />
                     <span>Beliebteste Wahl</span>
                   </div>
@@ -135,7 +135,7 @@ export default function Pricing() {
                 <div>
                   <div
                     className={`text-5xl font-bold ${
-                      pkg.popular ? 'text-teal-400' : 'text-navy-900'
+                      pkg.popular ? 'text-purple-400' : 'text-navy-900'
                     }`}
                   >
                     {pkg.price}
@@ -169,7 +169,7 @@ export default function Pricing() {
                     >
                       <Check
                         className={`flex-shrink-0 mt-1 ${
-                          pkg.popular ? 'text-teal-400' : 'text-navy-600'
+                          pkg.popular ? 'text-purple-400' : 'text-navy-600'
                         }`}
                         size={20}
                       />
@@ -189,7 +189,7 @@ export default function Pricing() {
                   href="/matching"
                   className={`block w-full text-center py-4 font-bold rounded-lg transition-all duration-200 ${
                     pkg.popular
-                      ? 'bg-teal-500 text-white hover:bg-teal-400 shadow-lg'
+                      ? 'bg-purple-500 text-white hover:bg-purple-400 shadow-lg'
                       : 'bg-navy-600 text-white hover:bg-navy-700'
                   }`}
                 >
@@ -217,3 +217,4 @@ export default function Pricing() {
     </section>
   )
 }
+

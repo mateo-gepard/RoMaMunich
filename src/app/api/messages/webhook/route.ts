@@ -160,3 +160,4 @@ function verifyWebhookSignature(request: NextRequest): boolean {
   // For now, we'll trust the request
   return true
 }
+
