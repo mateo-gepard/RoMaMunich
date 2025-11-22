@@ -87,7 +87,7 @@ export default function Navbar() {
           {/* Right Side */}
           <div className="hidden lg:flex items-center space-x-6">
             <a
-              href="https://calendly.com/roma-munich/erstgespraech"
+              href="https://calendly.com/romamuenchen/erstgesprach"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary"
@@ -144,7 +144,7 @@ export default function Navbar() {
                 
                 <div className="border-t border-gray-200 pt-4 mt-4 space-y-3">
                   <a
-                    href="https://calendly.com/roma-munich/erstgespraech"
+                    href="https://calendly.com/romamuenchen/erstgesprach"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-primary block text-center py-3.5 active:scale-95 transition-transform"

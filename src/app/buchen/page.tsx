@@ -27,7 +27,7 @@ export default function BookingPage() {
             {/* Calendly Widget */}
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
               <CalendlyWidget 
-                url="https://calendly.com/roma-munich/erstgespraech" 
+                url="https://calendly.com/romamuenchen/erstgesprach" 
                 type="inline"
               />
             </div>

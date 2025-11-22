@@ -35,7 +35,7 @@ export default function CTA() {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <a
-              href="https://calendly.com/roma-munich/erstgespraech"
+              href="https://calendly.com/romamuenchen/erstgesprach"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center space-x-2 px-10 py-5 bg-purple-500 text-white font-bold text-lg rounded-xl hover:bg-purple-400 transition-all duration-200 shadow-xl hover:shadow-2xl active:scale-95"
