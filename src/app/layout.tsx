@@ -1,6 +1,7 @@
 import '../styles/globals.css'
 import type { Metadata } from 'next'
 import { Inter, Lato } from 'next/font/google'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -38,7 +39,9 @@ export default function RootLayout({
   return (
     <html lang="de" className={`${inter.variable} ${lato.variable}`}>
       <body className="font-sans">
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )

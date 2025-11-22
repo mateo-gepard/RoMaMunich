@@ -86,10 +86,16 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="hidden lg:flex items-center space-x-6">
+            <Link
+              href="/login"
+              className={`font-medium transition-colors ${
+                isScrolled ? 'text-navy-700 hover:text-navy-900' : 'text-white hover:text-gray-200'
+              }`}
+            >
+              Anmelden
+            </Link>
             <a
-              href="https://calendly.com/romamuenchen/erstgesprach"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/buchen"
               className="btn-primary"
             >
               {t.navbar.bookSession}
@@ -143,10 +149,15 @@ export default function Navbar() {
                 </Link>
                 
                 <div className="border-t border-gray-200 pt-4 mt-4 space-y-3">
+                  <Link
+                    href="/login"
+                    className="block text-navy-700 font-medium px-4 py-3.5 hover:bg-gray-50 active:bg-gray-100 rounded-lg transition-colors text-center"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Anmelden
+                  </Link>
                   <a
-                    href="https://calendly.com/romamuenchen/erstgesprach"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/buchen"
                     className="btn-primary block text-center py-3.5 active:scale-95 transition-transform"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
