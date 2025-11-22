@@ -66,15 +66,17 @@ export default function HeroSection() {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
-              <Link
-                href="/matching"
+              <a
+                href="https://calendly.com/roma-munich/erstgespraech"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center space-x-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-purple-500 text-white font-bold rounded-lg hover:bg-purple-400 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95 text-center"
               >
-                <span>{t.hero.cta}</span>
+                <span>Erstgespräch buchen</span>
                 <ArrowRight size={20} />
-              </Link>
+              </a>
               <Link
-                href="/mentors"
+                href="/how-it-works"
                 className="inline-flex items-center justify-center space-x-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/30 hover:bg-white/20 transition-all duration-200 active:scale-95 text-center"
               >
                 <span>{t.hero.learnMore}</span>

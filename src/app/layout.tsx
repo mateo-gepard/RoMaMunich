@@ -1,8 +1,6 @@
 import '../styles/globals.css'
 import type { Metadata } from 'next'
 import { Inter, Lato } from 'next/font/google'
-import { Toaster } from 'react-hot-toast'
-import ClientLayout from '@/components/ClientLayout'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -40,21 +38,7 @@ export default function RootLayout({
   return (
     <html lang="de" className={`${inter.variable} ${lato.variable}`}>
       <body className="font-sans">
-        <ClientLayout>
-          {children}
-        </ClientLayout>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: '#1a365d',
-              color: '#fff',
-              padding: '16px',
-              borderRadius: '12px',
-            },
-          }}
-        />
+        {children}
       </body>
     </html>
   )

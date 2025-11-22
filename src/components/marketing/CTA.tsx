@@ -34,13 +34,15 @@ export default function CTA() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-            <Link
-              href="/matching"
+            <a
+              href="https://calendly.com/roma-munich/erstgespraech"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center space-x-2 px-10 py-5 bg-purple-500 text-white font-bold text-lg rounded-xl hover:bg-purple-400 transition-all duration-200 shadow-xl hover:shadow-2xl active:scale-95"
             >
               <span>Erstgespräch buchen</span>
               <ArrowRight size={24} />
-            </Link>
+            </a>
             <Link
               href="/mentors"
               className="inline-flex items-center space-x-2 px-10 py-5 bg-white/10 backdrop-blur-sm text-white font-bold text-lg rounded-xl border-2 border-white/30 hover:bg-white/20 transition-all duration-200"

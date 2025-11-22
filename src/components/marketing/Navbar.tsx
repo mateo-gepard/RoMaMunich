@@ -1,13 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { useTranslations } from '@/hooks/useTranslations'
 
 export default function Navbar() {
-  const { data: session } = useSession()
   const { t } = useTranslations()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -88,18 +86,14 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="hidden lg:flex items-center space-x-6">
-            <Link
-              href={session ? "/dashboard" : "/login"}
-              className={`font-medium transition-colors ${
-                isScrolled ? 'text-navy-700 hover:text-navy-900' : 'text-white hover:text-gray-200'
-              }`}
+            <a
+              href="https://calendly.com/roma-munich/erstgespraech"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
             >
-              {session ? t.navbar.dashboard : t.navbar.login}
-            </Link>
-
-            <Link href="/matching" className="btn-primary">
               {t.navbar.bookSession}
-            </Link>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -149,20 +143,15 @@ export default function Navbar() {
                 </Link>
                 
                 <div className="border-t border-gray-200 pt-4 mt-4 space-y-3">
-                  <Link
-                    href={session ? "/dashboard" : "/login"}
-                    className="block text-navy-700 font-medium px-4 py-3.5 hover:bg-gray-50 active:bg-gray-100 rounded-lg transition-colors text-center"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {session ? t.navbar.dashboard : t.navbar.login}
-                  </Link>
-                  <Link
-                    href="/matching"
+                  <a
+                    href="https://calendly.com/roma-munich/erstgespraech"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="btn-primary block text-center py-3.5 active:scale-95 transition-transform"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {t.navbar.bookSession}
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>
